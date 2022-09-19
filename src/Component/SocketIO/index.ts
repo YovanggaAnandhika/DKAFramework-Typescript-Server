@@ -27,11 +27,12 @@ const SOCKET_IO = async (config : ConfigSocketIO) : Promise<mServerHTTP> => {
             }else{
                 await io.use(await Middleware(config));
             }
-            if (config.app !== undefined) {
-                await config.app(io);
+
+            if (config.use !== undefined) {
+                await config.use(io);
                 await resolve(mHttp)
             } else {
-                rejected({status: false, code: 500, msg: `app must Declaration For Routes`})
+                rejected({status: false, code: 500, msg: `"use" option must Declaration For Routes`})
             }
 
         }catch (e) {

@@ -1,6 +1,6 @@
 import Options from "../../../../Const";
 import {
-    ConfigServerSocketIOSettingsSecurityAuthorizationOauth
+    ConfigServerSocketIOSettingsSecurityAuthorizationOauth, ConfigSocketIO
 } from "../../../../Interfaces/Config";
 import mLogger from "../../../../Function/Helper/logger";
 import {isEmpty, keys} from "lodash";
@@ -13,7 +13,7 @@ function checkHeaders(headers : any, key : string) {
     return undefined === headers[key] && isEmpty(headers[key]);
 }
 
-export const Oauth2 = async (config: DKAConfig, headers: Http.IncomingHttpHeaders, mAuth: ConfigServerSocketIOSettingsSecurityAuthorizationOauth, next: any) => {
+export const Oauth2 = async (config: ConfigSocketIO, headers: Http.IncomingHttpHeaders, mAuth: ConfigServerSocketIOSettingsSecurityAuthorizationOauth, next: any) => {
     if (checkHeaders(headers, "secret_id")){
         (config.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
             logger.error(`Field Header "secret_id" not exist or Empty [DKA_AUTH_FIELD_SECRET_KEY_REQUIRE_OR_EMPTY]`) : null;

@@ -1,5 +1,7 @@
+import Webpack, {Configuration, Compiler as WebpackCompiler, MultiCompiler as WebpackMultiCompiler, EntryObject } from "webpack";
+import { Configuration as WebpackDevConfig } from "webpack-dev-server";
 import {
-    EngineFastify,
+    EngineFastify, EngineReactJS,
     EngineSocketIO,
     FastifyInstances, FastifyRegistringPlugins, SecurityAuthorizationCallbackBasic, SecurityAuthorizationCallbackOauth,
     SecurityAuthorizationMode,
@@ -12,16 +14,18 @@ import http from "http";
 import {FastifyBaseLogger} from "fastify/types/logger";
 import exp from "constants";
 import path from "path";
+import nodemon from "nodemon";
 
 export interface ConfigState {
-    SERVER_STATE_DEVELOPMENT : "DEVELOPMENT",
-    SERVER_STATE_PRODUCTION : "PRODUCTION"
+    SERVER_STATE_DEVELOPMENT : "development",
+    SERVER_STATE_PRODUCTION : "production"
 }
 
 export interface ConfigEngine {
     FASTIFY : EngineFastify,
     EXPRESSSJS : "EXPRESSJS",
     SOCKETIO : EngineSocketIO,
+    REACTJS : EngineReactJS,
     HTTP : "HTTP",
     UDP : "UDP"
 }
@@ -32,23 +36,48 @@ export interface ConfigHost {
 }
 
 export interface ConfigPort {
-    DEFAULT : 80
+    DEFAULT : 3339
+}
+
+export interface ConfigServerFastifySettingsNodemon {
+    enabled ?: boolean,
+    settings ?: nodemon.Settings
+}
+
+export interface ConfigServerFastifySettings extends FastifyServerOptions<http.Server, FastifyBaseLogger> {
+    registerModule ?: FastifyRegistringPlugins | undefined,
+    nodemon ?: ConfigServerFastifySettingsNodemon
+}
+
+export interface ConfigServerFastifyPluginsPointOfViewSettingsEngine {
+    ejs ?: any
 }
 
 
-
-export interface ConfigServerFastifySettings extends FastifyServerOptions<http.Server, FastifyBaseLogger> {
-
+export interface ConfigServerFastifyPluginsPointOfViewSettings {
+    engine ?: ConfigServerFastifyPluginsPointOfViewSettingsEngine,
+    root ?: string,
+    includeViewExtension ?: boolean
 }
 
 export interface ConfigServerFastifyPluginsPointOfView {
     enabled ?: boolean,
-    settings ?: object
+    settings ?: ConfigServerFastifyPluginsPointOfViewSettings
+}
+
+
+export interface ConfigServerFastifyPluginsStaticSettings {
+    root ?: string,
+    prefix ?: string
+}
+export interface ConfigServerFastifyPluginsStatic {
+    enabled ?: boolean,
+    settings ?: ConfigServerFastifyPluginsStaticSettings
 }
 
 export interface ConfigServerFastifyPlugins {
     pointOfView ?: ConfigServerFastifyPluginsPointOfView,
-
+    static ?: ConfigServerFastifyPluginsStatic
 }
 
 export interface ConfigServerSocketIOSettingsSecurityAuthorizationCallbackOauth {
@@ -83,15 +112,15 @@ export interface ConfigServerSocketIOSettings extends Partial<ServerOptions> {
 }
 
 export interface ConfigSystemMultiTypes {
-    DEFAULT_DELAY_PROGRESS ?: number
+    DEFAULT_DELAY_PROGRESS ?: number,
+    BASE_PATH ?: string
 }
 
 export interface ConfigFastify {
     state ?: State,
-    engine ?: EngineFastify,
+    engine : EngineFastify,
     host ?: string | undefined,
     port ?: number | string | undefined,
-    registerModule ?: FastifyRegistringPlugins | undefined
     app ?: FastifyInstances,
     getConfig ?: (config : ConfigFastify) => void | Promise<void>,
     settings ?: ConfigServerFastifySettings | undefined,
@@ -102,13 +131,38 @@ export interface ConfigFastify {
 
 export interface ConfigSocketIO {
     state? : State,
-    engine? : EngineSocketIO,
-    host? : string | undefined,
+    engine : EngineSocketIO,
     port? : number | Server,
-    app? : SocketIOInstances,
+    use? : SocketIOInstances,
     getConfig? : (config : ConfigSocketIO) => void | Promise<void>,
     settings? : ConfigServerSocketIOSettings | undefined,
     Constanta ?: ConfigSystemMultiTypes | undefined
 }
+
+
+export interface ConfigReactJSConfig {
+    compiler : Configuration
+}
+
+export type webpackDevTypes = WebpackCompiler | WebpackMultiCompiler | WebpackDevConfig;
+
+export type ConfigReactJS = {
+    state? : State,
+    host ?: string | undefined,
+    port ?: number | undefined,
+    engine : EngineReactJS,
+    entry ?:
+        | string
+        | (() => string | EntryObject | string[] | Promise<string | EntryObject | string[]>)
+        | EntryObject
+        | string[],
+    plugins ?: (
+        | ((this: WebpackCompiler, compiler: WebpackCompiler) => void)
+        | Webpack.WebpackPluginInstance
+        )[],
+    serverConfig ?: webpackDevTypes,
+    getConfig? : (config : ConfigReactJS) => void | Promise<void>,
+    Constanta ?: ConfigSystemMultiTypes | undefined
+};
 
 

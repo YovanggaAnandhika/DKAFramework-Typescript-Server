@@ -29,7 +29,7 @@ const FASTIFY = async (config : ConfigFastify) : Promise<FastifyInstance> => {
     let mFastify = await Fastify(config.settings);
     /*let mApp = */
     let mPluginsApp =  (config.plugins !== undefined) ? await Plugins(config, mFastify) : mFastify
-    let mApp = (config.registerModule !== undefined) ? await config.registerModule(mFastify) : mPluginsApp;
+    let mApp = (config.settings?.registerModule !== undefined) ? await config.settings.registerModule(mFastify) : mPluginsApp;
     return new Promise(async (resolve, rejected) => {
         try {
             if (config.app !== undefined) {

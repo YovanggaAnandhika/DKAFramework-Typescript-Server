@@ -61,10 +61,53 @@ export async function ServerViewInstance(config : ConfigFastify, app : FastifyIn
 
     })
 }
+
+export async function ServerStaticInstance(config : ConfigFastify, app : FastifyInstance) : Promise<FastifyInstance> {
+    return new Promise(async (resolve, rejected) => {
+        if (config.plugins?.static !== undefined){
+            if (config.plugins?.static?.enabled){
+                /** ================= DEBUG CONSOLE ======================= **/
+                (config.state === Options.Server.State.SERVER_STATE_DEVELOPMENT)?
+                    CliProgress.increment({ state : config.state, status : Options.READY_STATE, descriptions : "plugin static enabled. check resolution modules exists" }) : null;
+                await CliProgress.setTotal(CliProgress.getTotal())
+                await Delay(config.Constanta?.DEFAULT_DELAY_PROGRESS);
+                /** ================= DEBUG CONSOLE ======================= **/
+                if (checkModuleExist("@fastify/static")){
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    (config.state === Options.Server.State.SERVER_STATE_DEVELOPMENT)?
+                        CliProgress.increment({ state : config.state, status : Options.READY_STATE, descriptions : "static module exist. start registering plugins" }) : null;
+                    await CliProgress.setTotal(CliProgress.getTotal())
+                    await Delay(config.Constanta?.DEFAULT_DELAY_PROGRESS);
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    if (config.plugins.static.settings){
+                        await app.register(require("@fastify/static"), config.plugins.static.settings);
+                        await resolve(app);
+                    } else{
+                        await rejected({ status : false, code : 500, msg : `static is Enabled, but plugins.static.settings. not declare`})
+                    }
+                }else{
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    (config.state === Options.Server.State.SERVER_STATE_DEVELOPMENT)?
+                        CliProgress.increment({ state : config.state, status : Options.READY_STATE, descriptions : "plugin point of view enabled. but module not found. skipped" }) : null;
+                    await CliProgress.setTotal(CliProgress.getTotal())
+                    await Delay(config.Constanta?.DEFAULT_DELAY_PROGRESS);
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    rejected({ status : false, code : 500, msg : `plugin point of view enabled. but module not found. skipped`})
+                }
+            }else{
+                await resolve(app);
+            }
+        }else{
+            await resolve(app);
+        }
+
+    })
+}
 export async function Plugins(config : ConfigFastify, app : FastifyInstance) : Promise<FastifyInstance> {
     let mApp : FastifyInstance = app;
     await Promise.all([
-        await ServerViewInstance(config, app)
+        await ServerViewInstance(config, app),
+        await ServerStaticInstance(config,app)
     ]).then(async () => {
         mApp = app;
     }).catch(async (error) => {

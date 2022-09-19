@@ -1,8 +1,8 @@
 import {ConfigState, ConfigEngine, ConfigHost, ConfigPort} from "../../Interfaces/Config";
 
 export const State : ConfigState = {
-    SERVER_STATE_DEVELOPMENT : "DEVELOPMENT",
-    SERVER_STATE_PRODUCTION : "PRODUCTION"
+    SERVER_STATE_DEVELOPMENT : "development",
+    SERVER_STATE_PRODUCTION : "production"
 }
 
 export const Engine : ConfigEngine = {
@@ -10,6 +10,7 @@ export const Engine : ConfigEngine = {
     HTTP : "HTTP",
     UDP : "UDP",
     SOCKETIO : "SOCKET.IO",
+    REACTJS : "REACTJS",
     EXPRESSSJS : "EXPRESSJS"
 }
 export const Host : ConfigHost = {
@@ -18,7 +19,7 @@ export const Host : ConfigHost = {
 }
 
 export const Port : ConfigPort = {
-    DEFAULT : 80
+    DEFAULT : 3339
 }
 
 const Server = {

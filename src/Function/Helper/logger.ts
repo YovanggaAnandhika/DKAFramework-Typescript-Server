@@ -5,7 +5,7 @@ import winston, {format, Logger} from "winston";
 
 const { combine, timestamp, label, printf, colorize } = format;
 
-export let location = existsSync(path.join(require.main?.filename!, "./..")) ? path.join(require.main?.filename!,"./../") : path.join(__dirname, "./");
+export let location = existsSync(path.join(require.main?.filename!, "./../Logs/")) ? path.join(require.main?.filename!,"./../logs/") : path.join(require.main?.filename!, "./../");
 export let mLogger = {
     logger : winston.createLogger({
         format: winston.format.combine(
