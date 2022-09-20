@@ -36,7 +36,7 @@ export interface ConfigHost {
 }
 
 export interface ConfigPort {
-    DEFAULT : 3339
+    DEFAULT : 80
 }
 
 export interface ConfigServerFastifySettingsNodemon {
@@ -117,6 +117,9 @@ export interface ConfigSystemMultiTypes {
 }
 
 export interface ConfigFastify {
+    /**
+     * The State Development or Production
+     * **/
     state ?: State,
     engine : EngineFastify,
     host ?: string | undefined,
@@ -130,6 +133,9 @@ export interface ConfigFastify {
 
 
 export interface ConfigSocketIO {
+    /**
+     * The State Development or Production
+     * **/
     state? : State,
     engine : EngineSocketIO,
     port? : number | Server,
@@ -147,6 +153,9 @@ export interface ConfigReactJSConfig {
 export type webpackDevTypes = WebpackCompiler | WebpackMultiCompiler | WebpackDevConfig;
 
 export type ConfigReactJS = {
+    /**
+     * The State Development or Production
+     * **/
     state? : State,
     host ?: string | undefined,
     port ?: number | undefined,

@@ -19,7 +19,7 @@ export const Host : ConfigHost = {
 }
 
 export const Port : ConfigPort = {
-    DEFAULT : 3339
+    DEFAULT : 80
 }
 
 const Server = {

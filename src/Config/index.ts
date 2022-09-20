@@ -23,7 +23,7 @@ export const ServerSettingsFastify : Config.ConfigServerFastifySettings  = {
  */
 export const FastifyConfigurationDefault : ConfigFastify = {
     state : Const.Server.State.SERVER_STATE_DEVELOPMENT,
-    engine : "FASTIFY",
+    engine : Const.Server.Engine.FASTIFY,
     host : Const.Server.Host.LOCALHOST,
     port : Const.Server.Port.DEFAULT,
     app : async (app, opts, next) => {
@@ -52,20 +52,20 @@ export const FastifyConfigurationDefault : ConfigFastify = {
     }
 }
 export const SocketIOConfigurationDefault : ConfigSocketIO = {
-    state : "development",
-    engine : "SOCKET.IO",
+    state : Const.Server.State.SERVER_STATE_DEVELOPMENT,
+    engine : Const.Server.Engine.SOCKETIO,
     use : async (io) => {
 
     },
     settings : {
         costumMiddleware : undefined
     },
-    port : 8081
+    port : Const.Server.Port.DEFAULT
 }
 
 export const ReactJSConfigurationDefault : ConfigReactJS = {
-    state : "development",
-    engine : "REACTJS",
-    host : "127.0.0.1",
-    port : 8082
+    state : Const.Server.State.SERVER_STATE_DEVELOPMENT,
+    engine : Const.Server.Engine.REACTJS,
+    host : Const.Server.Host.LOCALHOST,
+    port : Const.Server.Port.DEFAULT
 }

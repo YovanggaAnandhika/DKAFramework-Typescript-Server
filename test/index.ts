@@ -1,14 +1,9 @@
-import Server,{ Options } from "./../src";
+import { Server, Options } from "./../src";
 
 (async () => {
     await Server({
-        engine : Options.Server.Engine.SOCKETIO,
-        settings : {
-
-        },
-        Constanta : {
-
-        }
+        state : Options.Server.State.SERVER_STATE_DEVELOPMENT,
+        engine : Options.Server.Engine.FASTIFY
     }).then(async (res) => {
         console.log(JSON.stringify(res));
     }).catch(async (error) => {
