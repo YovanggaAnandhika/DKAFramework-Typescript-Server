@@ -90,26 +90,18 @@ Us For More Information.
 Simple Used Module
 
 with ESCMA SCRIPT
-```
+```typescript
    import Server, { Server, Options, Types } from "@dkaframework/server";
-   
-   
-    
+
    (async () => {
-        ... another code ...
-                   
-        await Server(DKAConfig);
-                        ^^^^ (Extend Function Asyncnous)
+        await Server(DKAConfig)
             .then(async (result) => {
                 console.log(result);
             })
             .catch(async (error) => {
                 console.log(error);
             });
-        
-        .. another code ...
    })();
-    
 ```
 
 Read More About [How To Use](https://github.com/YovanggaAnandhika/Server/blob/master/USAGE.md) For How To Details Use.
