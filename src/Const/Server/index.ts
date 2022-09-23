@@ -10,6 +10,7 @@ export const Engine : ConfigEngine = {
     HTTP : "HTTP",
     UDP : "UDP",
     SOCKETIO : "SOCKET.IO",
+    SOCKETIOCLIENT : "SOCKET.IO-CLIENT",
     REACTJS : "REACTJS",
     EXPRESSSJS : "EXPRESSJS"
 }

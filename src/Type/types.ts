@@ -1,26 +1,27 @@
-import {
-    FastifyInstance,
-    FastifyLoggerInstance, FastifyPluginOptions, FastifyRegisterOptions,
-    RawRequestDefaultExpression,
-    RawServerDefault
-} from "fastify";
-export * from "fastify";
-import {FastifyTypeProviderDefault} from "fastify/types/type-provider";
+import {FastifyInstance, FastifyPluginOptions} from "fastify";
 import {Server, Socket} from "socket.io";
+import * as Sock from "socket.io-client";
 import {DefaultEventsMap} from "socket.io/dist/typed-events";
 import {ExtendedError} from "socket.io/dist/namespace";
 import {
-    ConfigFastify, ConfigReactJS,
+    ConfigFastify,
+    ConfigReactJS,
     ConfigServerSocketIOSettingsSecurityAuthorizationCallbackBasic,
-    ConfigServerSocketIOSettingsSecurityAuthorizationCallbackOauth, ConfigSocketIO
+    ConfigServerSocketIOSettingsSecurityAuthorizationCallbackOauth,
+    ConfigSocketIO,
+    ConfigSocketIOClient
 } from "../Interfaces/Config";
 
+export * from "fastify";
+
 export type SocketIOInstance = Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+export type SocketIOInstanceSocket = Socket<DefaultEventsMap, DefaultEventsMap, any>;
+export type SocketIOInstanceClient = Sock.Socket<DefaultEventsMap, DefaultEventsMap>;
 export type SocketIOInstances = (io : SocketIOInstance) => Promise<void> | void | undefined;
 export type SocketIOInstancesMiddleware = (io : Socket<DefaultEventsMap, DefaultEventsMap>, next: (err?: (ExtendedError | undefined)) => void) => Promise<void> | void | undefined;
 export type FastifyRegistringPlugins = (app : FastifyInstance) => Promise<FastifyInstance>;
 export type FastifyInstances = (app : FastifyInstance, opts: FastifyPluginOptions, next : any) => Promise<void> | void | undefined;
-
+export type SocketIOInstancesClient = (io : SocketIOInstanceClient) => Promise<void> | void | undefined;
 export type SocketIOMiddleware = (io : ConfigServerSocketIOSettingsSecurityAuthorizationCallbackOauth, next : (error ?: Error) => void) => void | Promise<void>;
 
 export type SecurityAuthorizationCallbackOauth = (callback : ConfigServerSocketIOSettingsSecurityAuthorizationCallbackOauth, next : (error ?: Error) => void) => void | Promise<void>;
@@ -32,7 +33,7 @@ export type EngineFastify = "FASTIFY";
 /**
  * @typedef { ConfigFastify | ConfigSocketIO } Config
  */
-export type DKAConfig = ConfigFastify | ConfigSocketIO | ConfigReactJS | object;
+export type DKAConfig = ConfigFastify | ConfigSocketIO | ConfigReactJS | ConfigSocketIOClient | object;
 
 export function isFastify(obj: any): obj is ConfigFastify {
     // 👇️ check for type property
@@ -49,9 +50,26 @@ export function isReactJS(obj: any): obj is ConfigReactJS {
     return 'type' in obj && obj.type === 'REACTJS';
 }
 
+export type MetaDataSocketIOClient = {
+    id ?: string,
+    timestamp ?: {
+        lastTime ?: {
+            onConnect ?: {
+                unix ?: number,
+                humanize ?: string
+            },
+            onDisconnect ?: {
+                unix ?: number,
+                humanize ?: string
+            }
+        }
+    }
+} | undefined;
+
 
 /**
  * @type EngineSocketIO
  */
 export type EngineSocketIO = "SOCKET.IO";
+export type EngineSocketIOClient = "SOCKET.IO-CLIENT";
 export type EngineReactJS = "REACTJS"

@@ -1,19 +1,27 @@
 import Webpack, {Configuration, Compiler as WebpackCompiler, MultiCompiler as WebpackMultiCompiler, EntryObject } from "webpack";
 import { Configuration as WebpackDevConfig } from "webpack-dev-server";
 import {
-    EngineFastify, EngineReactJS,
+    EngineFastify,
+    EngineReactJS,
     EngineSocketIO,
-    FastifyInstances, FastifyRegistringPlugins, SecurityAuthorizationCallbackBasic, SecurityAuthorizationCallbackOauth,
-    SecurityAuthorizationMode,
-    SocketIOInstances, SocketIOInstancesMiddleware,
+    EngineSocketIOClient,
+    FastifyInstances,
+    FastifyRegistringPlugins,
+    MetaDataSocketIOClient,
+    SecurityAuthorizationCallbackBasic,
+    SecurityAuthorizationCallbackOauth,
+    SocketIOInstanceClient,
+    SocketIOInstances,
+    SocketIOInstancesClient,
+    SocketIOInstancesMiddleware, SocketIOInstanceSocket,
     State
 } from "../Type/types";
 import {Server, ServerOptions} from "socket.io";
-import {FastifyLoggerInstance, FastifyServerOptions, RawServerDefault} from "fastify";
+import * as Sock from "socket.io-client";
+import {FastifyServerOptions} from "fastify";
 import http from "http";
 import {FastifyBaseLogger} from "fastify/types/logger";
-import exp from "constants";
-import path from "path";
+
 import nodemon from "nodemon";
 
 export interface ConfigState {
@@ -25,6 +33,7 @@ export interface ConfigEngine {
     FASTIFY : EngineFastify,
     EXPRESSSJS : "EXPRESSJS",
     SOCKETIO : EngineSocketIO,
+    SOCKETIOCLIENT : EngineSocketIOClient,
     REACTJS : EngineReactJS,
     HTTP : "HTTP",
     UDP : "UDP"
@@ -132,6 +141,12 @@ export interface ConfigFastify {
 }
 
 
+export interface ConfigSocketIOGetClientConnected {
+    ClientList ?: Array<SocketIOInstanceSocket>,
+    CurrentClient ?: SocketIOInstanceSocket,
+    TotalClientConnected ?: number
+}
+
 export interface ConfigSocketIO {
     /**
      * The State Development or Production
@@ -139,9 +154,63 @@ export interface ConfigSocketIO {
     state? : State,
     engine : EngineSocketIO,
     port? : number | Server,
-    use? : SocketIOInstances,
+    io? : SocketIOInstances,
+    onConnection ?: (io ?: SocketIOInstanceSocket) => Promise<void> | void | undefined,
+    onDisconnect ?: (reason : string) => Promise<void> | void | undefined,
+    getClientConnected ?: (io : ConfigSocketIOGetClientConnected) => Promise<void> | undefined,
     getConfig? : (config : ConfigSocketIO) => void | Promise<void>,
     settings? : ConfigServerSocketIOSettings | undefined,
+    Constanta ?: ConfigSystemMultiTypes | undefined
+}
+
+export interface ConfigSocketIOClient {
+    /**
+     * The State Development or Production
+     * **/
+    state? : State,
+    engine : EngineSocketIOClient,
+    host ?: string | undefined,
+    port ?: number | undefined,
+    io ?: SocketIOInstancesClient | undefined,
+    costumNameSpace ?: string | undefined,
+    onConnect ?: (io : SocketIOInstanceClient) => Promise<void> | void,
+    onConnectError ?: (error : any) => Promise<void> | void | undefined,
+    onDisconnect ?: (id : MetaDataSocketIOClient) => Promise<void> | void | undefined,
+    events ?: {
+        onReconnect ?: (attempt : number) => Promise<void> | void | undefined,
+        onReconnectAttempt ?: (attempt : number) => Promise<void> | void | undefined,
+        onReconnectError ?: (error : any) => Promise<void> | void | undefined,
+        onReconnectFailed ?: () => Promise<void> | void | undefined,
+        onPing ?: () => Promise<void> | void | undefined,
+        onError ?: (error : any) => Promise<void> | void | undefined,
+    }
+
+    /**
+     *
+     * await io.io.on("reconnect", async (attempt) => {
+     *             console.log(`connection socket.io-client reconnect, with message ${attempt.toString()} attempt`);
+     *         })
+     *
+     *         await io.io.on("reconnect_attempt", async (attempt) => {
+     *             console.log(`connection socket.io-client reconnect_attempt, with message ${attempt.toString()} attempt`);
+     *         });
+     *         await io.io.on("reconnect_error", async (error) => {
+     *             console.log(`connection socket.io-client reconnect_error, with message ${error.toString()}`);
+     *         });
+     *
+     *         await io.io.on("reconnect_failed", async () => {
+     *             console.log(`connection socket.io-client failed`);
+     *         });
+     *
+     *         await io.io.on("ping", async () => {
+     *             console.log(`connection socket.io-client ping events`)
+     *         })
+     *         await io.io.on("error", async (error) => {
+     *             console.log(`connection socket.io-client fatal error, with message ${error.toString()}`)
+     *         });
+     */
+    getConfig? : (config : ConfigSocketIOClient) => void | Promise<void>,
+    settings? : Partial<Sock.ManagerOptions & Sock.SocketOptions> | undefined,
     Constanta ?: ConfigSystemMultiTypes | undefined
 }
 

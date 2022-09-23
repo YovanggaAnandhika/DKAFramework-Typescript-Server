@@ -1,11 +1,14 @@
-import {FastifyConfigurationDefault, ReactJSConfigurationDefault, SocketIOConfigurationDefault} from "./Config";
+import {
+    FastifyConfigurationDefault,
+    ReactJSConfigurationDefault,
+    SocketIOClientConfigurationDefault,
+    SocketIOConfigurationDefault
+} from "./Config";
 import * as DKATypes from "./Type/types";
-import nodemon, {Settings} from "nodemon";
 
 import {merge} from "lodash";
 import * as tcpPortUsed from "tcp-port-used";
 import {Logger} from "winston";
-import cliProgress from "cli-progress";
 
 import FASTIFY from "./Component/FASTIFY";
 import SOCKET_IO from "./Component/SocketIO";
@@ -17,14 +20,15 @@ import Options from "./Const";
 import mLogger from "./Function/Helper/logger";
 import { Delay } from "./Function/Helper/Delay";
 import {CliProgress} from "./Function/Helper/CliProgress";
-import {ConfigFastify, ConfigReactJS, ConfigSocketIO} from "./Interfaces/Config";
-import {isFastify, isReactJS, isSocketIO} from "./Type/types";
+import {ConfigFastify, ConfigReactJS, ConfigSocketIO, ConfigSocketIOClient} from "./Interfaces/Config";
 import REACTJS from "./Component/REACTJS";
+import SOCKET_IO_CLIENT from "./Component/SocketIOClient";
 
 
 
 let mTempFastify : ConfigFastify | never = { engine : "FASTIFY" };
 let mTempSocketIO : ConfigSocketIO = { engine : "SOCKET.IO" };
+let mTempSocketIOClient : ConfigSocketIOClient = { engine : "SOCKET.IO-CLIENT"};
 let mTempReactJS : ConfigReactJS = { engine : "REACTJS" };
 let logger : Logger = mLogger.logger;
 
@@ -34,7 +38,7 @@ let logger : Logger = mLogger.logger;
  * @return Promise<ServerCallback>
  *
  */
-export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigReactJS = FastifyConfigurationDefault) : Promise<DKAServerCallback> {
+export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigReactJS | ConfigSocketIOClient = FastifyConfigurationDefault) : Promise<DKAServerCallback> {
 
     return new Promise(async (resolve, rejected) => {
 
@@ -222,8 +226,69 @@ export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigRea
                         });
                         setTimeout(async () => {
                             await process.exit(0);
-                        }, 2000)
+                        }, 2000);
                     });
+                break;
+            case "SOCKET.IO-CLIENT" :
+//## Set Configuration merger
+                mTempSocketIOClient = await merge(SocketIOClientConfigurationDefault, config);
+                /** ================= DEBUG CONSOLE ======================= **/
+                (mTempSocketIOClient.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                    CliProgress.start(43, 0, { state : mTempSocketIOClient.state, status : Options.READY_STATE, descriptions : "Prepare Running Program" }) : null;
+                await CliProgress.setTotal(CliProgress.getTotal())
+                await Delay(mTempSocketIOClient?.Constanta?.DEFAULT_DELAY_PROGRESS);
+                /** ================= DEBUG CONSOLE ======================= **/
+
+                //$$$$$$$$$$$ DELETE GET CONFIG FUNCTION FOR GET CONFIG $$$$$$$$$$$$
+                delete mTempSocketIOClient.getConfig;
+                /** ================= DEBUG CONSOLE ======================= **/
+                (mTempSocketIOClient.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                    CliProgress.increment({ state : mTempSocketIOClient.state, status : Options.READY_STATE, descriptions : "Deleting Temporary Get Config Self" }) : null;
+                await CliProgress.setTotal(CliProgress.getTotal())
+                await Delay(mTempSocketIOClient.Constanta?.DEFAULT_DELAY_PROGRESS);
+                /** ================= DEBUG CONSOLE ======================= **/
+                await config.getConfig?.(mTempSocketIOClient as ConfigSocketIOClient);
+                /** ================= DEBUG CONSOLE ======================= **/
+                (mTempSocketIOClient.state === Options.Server.State.SERVER_STATE_DEVELOPMENT)?
+                    CliProgress.increment({ state : mTempSocketIOClient.state, status : Options.READY_STATE, descriptions : "Send Setter Configuration Callback" }) : null;
+                await CliProgress.setTotal(CliProgress.getTotal())
+                await Delay(mTempSocketIOClient.Constanta?.DEFAULT_DELAY_PROGRESS);
+                /** ================= DEBUG CONSOLE ======================= **/
+                //$$$$$$$$$$$ DELETE GET CONFIG FUNCTION FOR GET CONFIG $$$$$$$$$$$$
+
+                /** ================= DEBUG CONSOLE ======================= **/
+                (mTempSocketIOClient.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                    logger.info(`Socket IO Client Engine Selected Started`) : null;
+                await Delay(mTempSocketIOClient.Constanta?.DEFAULT_DELAY_PROGRESS);
+                /** ================= DEBUG CONSOLE ======================= **/
+                await SOCKET_IO_CLIENT(mTempSocketIOClient)
+                    .then(async () => {
+                        (mTempSocketIOClient.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                            logger.info(`Server "SOCKET.IO Client" Running Successfully - port : "${mTempSocketIOClient.port}"`) : null;
+                        await resolve({
+                            status: true,
+                            code: 200,
+                            msg: `Server "SOCKET.IO-CLIENT" Running Successfully`,
+                            metadata: {
+                                author: Options.Information.author,
+                                version: Options.Information.version
+                            }
+                        });
+                    })
+                    .catch(async (error) => {
+                        await rejected({
+                            status: false,
+                            code: 500,
+                            msg: `Server Running Failed`,
+                            error: {
+                                errorNames: "DKA_SERVER_HTTP_SOCKET_IO_CLIENT_ERROR",
+                                raw : error
+                            }
+                        });
+                        setTimeout(async () => {
+                            await process.exit(0);
+                        }, 2000);
+                    })
                 break;
             case "REACTJS" :
                 //## Set Configuration merger
@@ -313,8 +378,6 @@ export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigRea
         }
     });
 }
-
-
 
 export {
     Options,

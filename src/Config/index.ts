@@ -1,8 +1,7 @@
 import * as Config from "./../Interfaces/Config";
 import Const from "../Const";
-import {DKAConfig} from "../Type/types";
 import path from "path";
-import {ConfigFastify, ConfigReactJS, ConfigSocketIO} from "./../Interfaces/Config";
+import {ConfigFastify, ConfigReactJS, ConfigSocketIO, ConfigSocketIOClient} from "../Interfaces/Config";
 
 
 function checkModuleExist(name : string){
@@ -54,13 +53,20 @@ export const FastifyConfigurationDefault : ConfigFastify = {
 export const SocketIOConfigurationDefault : ConfigSocketIO = {
     state : Const.Server.State.SERVER_STATE_DEVELOPMENT,
     engine : Const.Server.Engine.SOCKETIO,
-    use : async (io) => {
-
-    },
     settings : {
         costumMiddleware : undefined
     },
     port : Const.Server.Port.DEFAULT
+}
+
+export const SocketIOClientConfigurationDefault : ConfigSocketIOClient = {
+    state : Const.Server.State.SERVER_STATE_DEVELOPMENT,
+    engine : Const.Server.Engine.SOCKETIOCLIENT,
+    host : "127.0.0.1",
+    port : 80,
+    settings : {
+        reconnectionDelay : 1000
+    }
 }
 
 export const ReactJSConfigurationDefault : ConfigReactJS = {
