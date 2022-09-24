@@ -4,6 +4,7 @@ import {existsSync} from "fs";
 import {check} from "tcp-port-used";
 import Options from "../../../Const";
 import {Logger} from "winston";
+import * as ngrok from "ngrok";
 import mLogger from "../../../Function/Helper/logger";
 import {CliProgress} from "../../../Function/Helper/CliProgress";
 import Delay from "../../../Function/Helper/Delay";
@@ -103,11 +104,89 @@ export async function ServerStaticInstance(config : ConfigFastify, app : Fastify
 
     })
 }
+
+export async function ServerNgrokTunnelingInstance(config : ConfigFastify, app : FastifyInstance) : Promise<FastifyInstance> {
+    return new Promise(async (resolve, rejected) => {
+        if (config.plugins?.ngrok !== undefined) {
+            if (config.plugins?.ngrok?.enabled) {
+                /** ================= DEBUG CONSOLE ======================= **/
+                (config.state === Options.Server.State.SERVER_STATE_DEVELOPMENT)?
+                    CliProgress.increment({ state : config.state, status : Options.READY_STATE, descriptions : "plugin ngrok enabled. check resolution modules exists" }) : null;
+                await CliProgress.setTotal(CliProgress.getTotal())
+                await Delay(config.Constanta?.DEFAULT_DELAY_PROGRESS);
+                /** ================= DEBUG CONSOLE ======================= **/
+                if (checkModuleExist("ngrok")){
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    (config.state === Options.Server.State.SERVER_STATE_DEVELOPMENT)?
+                        CliProgress.increment({ state : config.state, status : Options.READY_STATE, descriptions : "ngrok module exist. start registering plugins" }) : null;
+                    await CliProgress.setTotal(CliProgress.getTotal())
+                    await Delay(config.Constanta?.DEFAULT_DELAY_PROGRESS);
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    if (config.plugins.ngrok.settings){
+                        await ngrok.authtoken(config.plugins.ngrok.settings.authToken as string)
+                            .then(async () => {
+                                await ngrok.connect({
+                                    proto : config.plugins?.ngrok?.settings?.proto,
+                                    addr : config.port
+                                }).then(async (e) => {
+                                    let api = ngrok.getApi();
+                                    switch (config.plugins?.ngrok?.settings?.proto){
+                                        case "http" :
+                                            await api?.listTunnels()
+                                                .then(async (result) => {
+                                                    console.log([ result.tunnels[0].public_url, result.tunnels[1].public_url])
+                                                })
+                                                .catch(async (error) => {
+                                                    await rejected({ status : false, code : 500, msg : `ngrok list Tunnels Error`, error : error});
+                                                });
+                                            await resolve(app);
+                                            break;
+                                        case "tcp" :
+                                            await api?.listTunnels()
+                                                .then(async (result) => {
+                                                    console.log([ result.tunnels[0].public_url])
+                                                })
+                                                .catch(async (error) => {
+                                                    await rejected({ status : false, code : 500, msg : `ngrok list Tunnels Error`, error : error});
+                                                })
+                                            await resolve(app);
+                                            break;
+                                        default :
+                                            await rejected({ status : false, code : 500, msg : `ngrok unknown proto method`});
+                                    }
+
+                                }).catch(async (error) => {
+                                    await rejected({ status : false, code : 500, msg : `ngrok error connect`, error : error});
+                                })
+                            }).catch(async (error) => {
+                                await rejected({ status : false, code : 500, msg : `ngrok error auth token`, error : error});
+                            });
+                    } else{
+                        await rejected({ status : false, code : 500, msg : `ngrok is Enabled, but plugins.ngrok.settings. not declare`});
+                    }
+                }else{
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    (config.state === Options.Server.State.SERVER_STATE_DEVELOPMENT)?
+                        CliProgress.increment({ state : config.state, status : Options.READY_STATE, descriptions : "plugin ngrok enabled. but module not found. skipped" }) : null;
+                    await CliProgress.setTotal(CliProgress.getTotal())
+                    await Delay(config.Constanta?.DEFAULT_DELAY_PROGRESS);
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    await rejected({ status : false, code : 500, msg : `plugin ngrok enabled. but module not found. skipped`})
+                }
+            }else{
+                await resolve(app);
+            }
+        }else{
+            await resolve(app);
+        }
+    })
+}
 export async function Plugins(config : ConfigFastify, app : FastifyInstance) : Promise<FastifyInstance> {
     let mApp : FastifyInstance = app;
     await Promise.all([
         await ServerViewInstance(config, app),
-        await ServerStaticInstance(config,app)
+        await ServerStaticInstance(config,app),
+        await ServerNgrokTunnelingInstance(config, app)
     ]).then(async () => {
         mApp = app;
     }).catch(async (error) => {

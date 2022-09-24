@@ -33,7 +33,7 @@ export type EngineFastify = "FASTIFY";
 /**
  * @typedef { ConfigFastify | ConfigSocketIO } Config
  */
-export type DKAConfig = ConfigFastify | ConfigSocketIO | ConfigReactJS | ConfigSocketIOClient | object;
+export type DKAConfig = ConfigFastify | ConfigSocketIO | ConfigReactJS | object;
 
 export function isFastify(obj: any): obj is ConfigFastify {
     // 👇️ check for type property

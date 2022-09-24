@@ -23,6 +23,7 @@ import http from "http";
 import {FastifyBaseLogger} from "fastify/types/logger";
 
 import nodemon from "nodemon";
+import {RedisClientOptions} from "redis";
 
 export interface ConfigState {
     SERVER_STATE_DEVELOPMENT : "development",
@@ -84,7 +85,7 @@ export interface ConfigServerFastifyPluginsStatic {
     settings ?: ConfigServerFastifyPluginsStaticSettings
 }
 
-export interface ConfigServerFastifyPlugins {
+export interface ConfigServerFastifyPlugins extends MultiplePluginsServer {
     pointOfView ?: ConfigServerFastifyPluginsPointOfView,
     static ?: ConfigServerFastifyPluginsStatic
 }
@@ -125,6 +126,18 @@ export interface ConfigSystemMultiTypes {
     BASE_PATH ?: string
 }
 
+export interface MultiplePluginsServerNgrokSettings {
+    authToken : string | undefined,
+    proto : "tcp" | "http" | "tls"
+}
+export interface MultiplePluginsServerNgrok {
+    enabled ?: boolean | undefined,
+    settings ?: MultiplePluginsServerNgrokSettings
+}
+export interface MultiplePluginsServer {
+    ngrok ?: MultiplePluginsServerNgrok
+}
+
 export interface ConfigFastify {
     /**
      * The State Development or Production
@@ -147,6 +160,25 @@ export interface ConfigSocketIOGetClientConnected {
     TotalClientConnected ?: number
 }
 
+export interface ConfigSocketIOPluginsRedisSettingsSocket {
+    host : string,
+    port : number
+}
+export interface ConfigSocketIOPluginsRedisSettings extends RedisClientOptions {
+    socket : ConfigSocketIOPluginsRedisSettingsSocket,
+    password : string
+}
+
+export interface ConfigSocketIOPluginsRedis {
+    enabled ?: boolean | undefined,
+    settings ?: ConfigSocketIOPluginsRedisSettings
+}
+export interface ConfigSocketIOPlugins extends MultiplePluginsServer {
+    redis ?: ConfigSocketIOPluginsRedis | undefined
+}
+
+
+
 export interface ConfigSocketIO {
     /**
      * The State Development or Production
@@ -155,11 +187,12 @@ export interface ConfigSocketIO {
     engine : EngineSocketIO,
     port? : number | Server,
     io? : SocketIOInstances,
-    onConnection ?: (io ?: SocketIOInstanceSocket) => Promise<void> | void | undefined,
+    onConnection ?: (io : SocketIOInstanceSocket) => Promise<void> | void | undefined,
     onDisconnect ?: (reason : string) => Promise<void> | void | undefined,
-    getClientConnected ?: (io : ConfigSocketIOGetClientConnected) => Promise<void> | undefined,
+    onClient ?: (io : ConfigSocketIOGetClientConnected) => Promise<void> | undefined,
     getConfig? : (config : ConfigSocketIO) => void | Promise<void>,
     settings? : ConfigServerSocketIOSettings | undefined,
+    plugins? : ConfigSocketIOPlugins | undefined,
     Constanta ?: ConfigSystemMultiTypes | undefined
 }
 

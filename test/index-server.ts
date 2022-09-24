@@ -6,8 +6,14 @@ import {Options, Server} from "../src";
         state : Options.Server.State.SERVER_STATE_DEVELOPMENT,
         engine : Options.Server.Engine.SOCKETIO,
         port : 213,
-        getClientConnected : async (io) => {
+        onConnection : async (io) => {
+            io.broadcast.emit("test", { halo : 1});
+        },
+        onClient : async (io) => {
             console.log(io.TotalClientConnected)
+        },
+        plugins : {
+
         },
         settings : {
             pingInterval : 1000

@@ -1,11 +1,16 @@
-import {Options, Server} from "./../src";
+import {Options, Client} from "./../src";
 
 (async () => {
-    await Server({
+    await Client({
         state : Options.Server.State.SERVER_STATE_DEVELOPMENT,
         engine : Options.Server.Engine.SOCKETIOCLIENT,
         host : "127.0.0.1",
         port : 213,
+        io : async (io) => {
+            io.on("test", async (data) => {
+                console.log(data)
+            })
+        },
         onConnect : async (io) => {
             console.log(io.id)
         },

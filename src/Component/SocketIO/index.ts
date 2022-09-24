@@ -6,6 +6,8 @@ import Middleware from "./Middleware";
 // @ts-ignore
 import { setupMaster, setupWorker } from "@socket.io/sticky";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import {createClient} from "redis";
+import {createAdapter} from "@socket.io/redis-adapter";
 
 
 /**
@@ -32,7 +34,7 @@ const SOCKET_IO = async (config : ConfigSocketIO) : Promise<mServerHTTP> => {
             await io.on("connection", async (io) => {
                 (config.onConnection !== undefined) ? config.onConnection(io) : null;
                 mClientList.push(io);
-                (config.getClientConnected !== undefined) ? config.getClientConnected({
+                (config.onClient !== undefined) ? config.onClient({
                     ClientList : mClientList,
                     CurrentClient : io,
                     TotalClientConnected : mClientList.length
@@ -41,16 +43,22 @@ const SOCKET_IO = async (config : ConfigSocketIO) : Promise<mServerHTTP> => {
                 await io.on("disconnect", async (reason) => {
                     (config.onDisconnect !== undefined) ? config.onDisconnect(reason) : null;
                     mClientList = mClientList.filter(item => item !== io);
-                    (config.getClientConnected !== undefined) ? config.getClientConnected({
+                    (config.onClient !== undefined) ? config.onClient({
                         ClientList : mClientList,
                         CurrentClient : io,
                         TotalClientConnected : mClientList.length
                     }) : null;
                 })
             });
+
+
+
+            //@@ Detect IO Callback
             if (config.io !== undefined) {
                 await config.io(io);
             }
+            //End @@ Detect IO Callback
+
 
             process.on("SIGHUP", function (){
                 io.close();
@@ -58,7 +66,24 @@ const SOCKET_IO = async (config : ConfigSocketIO) : Promise<mServerHTTP> => {
                 process.kill(process.pid);
             })
 
-            await resolve(mHttp)
+            if (config.plugins?.redis?.enabled === true){
+                if (config.plugins.redis.settings !== undefined){
+                    const pubClient = createClient(config.plugins.redis.settings);
+                    const subClient = pubClient.duplicate();
+                    pubClient.on("error", async (error) => {
+                        console.log("terjadi error")
+                    });
+                    const createAdapterRedist = createAdapter(pubClient, subClient);
+                    await io.adapter(createAdapterRedist)
+                    await resolve(mHttp);
+                }else{
+                    await rejected({ status : false, msg : `redis plugins enabled. but, the settings not declare options`})
+                }
+            }else{
+                await resolve(mHttp);
+            }
+
+
 
         }catch (e) {
             await rejected(e);
