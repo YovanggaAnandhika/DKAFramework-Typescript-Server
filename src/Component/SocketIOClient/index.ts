@@ -5,8 +5,7 @@ import {MetaDataSocketIOClient} from "../../Type/types";
 import {merge} from "lodash";
 
 
-
-const SOCKET_IO_CLIENT = async (config : ConfigSocketIOClient) : Promise<void> => {
+const SOCKET_IO_CLIENT = async (config : ConfigSocketIOClient) : Promise<Sock.Socket> => {
 
     moment.locale("id")
 
@@ -87,7 +86,9 @@ const SOCKET_IO_CLIENT = async (config : ConfigSocketIOClient) : Promise<void> =
 
         if (config.io !== undefined){
             await config.io(io);
-            resolve();
+            resolve(io);
+        }else{
+            resolve(io);
         }
     })
 }

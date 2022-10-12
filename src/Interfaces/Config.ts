@@ -4,6 +4,8 @@ import Webpack, {
     EntryObject,
     MultiCompiler as WebpackMultiCompiler
 } from "webpack";
+import http, {ServerOptions as ServerOptionsHttp} from "http";
+import {ServerOptions as ServerOptionsHttps} from "https";
 import {Configuration as WebpackDevConfig} from "webpack-dev-server";
 import {
     EngineFastify,
@@ -25,7 +27,6 @@ import {
 import {Server, ServerOptions} from "socket.io";
 import * as Sock from "socket.io-client";
 import {FastifyServerOptions} from "fastify";
-import http from "http";
 import {FastifyBaseLogger} from "fastify/types/logger";
 
 import nodemon from "nodemon";
@@ -96,36 +97,54 @@ export interface ConfigServerFastifyPlugins extends MultiplePluginsServer {
     static ?: ConfigServerFastifyPluginsStatic
 }
 
-export interface ConfigServerSocketIOSettingsSecurityAuthorizationCallbackOauth {
+export interface ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth {
     secret_id? : string | undefined,
     secret_key? : string | undefined,
     redirect_uri? : string | undefined
 }
 
-export interface ConfigServerSocketIOSettingsSecurityAuthorizationCallbackBasic {
+export interface ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic {
     token? : string;
 }
 
-export interface ConfigServerSocketIOSettingsSecurityAuthorizationOauth {
+export interface ConfigServerSocketIOOptionsSecurityAuthorizationOauth {
     enabled? : Boolean | undefined,
     mode? : "OAUTH2" | undefined,
     callback : SecurityAuthorizationCallbackOauth
 }
 
-export interface ConfigServerSocketIOSettingsSecurityAuthorizationBasic {
+export interface ConfigServerSocketIOOptionsSecurityAuthorizationBasic {
     enabled? : Boolean | undefined,
     mode? : "BASIC" | undefined,
     callback : SecurityAuthorizationCallbackBasic
 }
 
 
-export interface ConfigServerSocketIOSettingsSecurity {
-    authorization? : ConfigServerSocketIOSettingsSecurityAuthorizationBasic | ConfigServerSocketIOSettingsSecurityAuthorizationOauth | undefined,
+export interface ConfigServerSocketIOOptionsSecurity {
+    authorization? : ConfigServerSocketIOOptionsSecurityAuthorizationBasic | ConfigServerSocketIOOptionsSecurityAuthorizationOauth | undefined,
 }
-export interface ConfigServerSocketIOSettings extends Partial<ServerOptions> {
-    security? : ConfigServerSocketIOSettingsSecurity | undefined,
-    costumMiddleware? : SocketIOInstancesMiddleware | undefined
+
+export interface ConfigServerSocketIOOptionsSocket extends Partial<ServerOptions> {
+    security? : ConfigServerSocketIOOptionsSecurity | undefined,
+    costumMiddleware? : SocketIOInstancesMiddleware | undefined,
 }
+
+export interface ConfigSocketIOHTTPSSettings {
+    protocol ?: "HTTPS",
+    settings ?: ServerOptionsHttps | undefined
+}
+
+export interface ConfigSocketIOHTTPSettings {
+    protocol ?: "HTTP",
+    settings ?: ServerOptionsHttp | undefined
+}
+
+export interface ConfigServerSocketIOOptions {
+    socket ?: ConfigServerSocketIOOptionsSocket | undefined,
+    server ?: ConfigSocketIOHTTPSettings | ConfigSocketIOHTTPSSettings | undefined
+}
+
+
 
 export interface ConfigSystemMultiTypes {
     DEFAULT_DELAY_PROGRESS ?: number,
@@ -197,7 +216,7 @@ export interface ConfigSocketIO {
     onDisconnect ?: (reason : string) => Promise<void> | void | undefined,
     onClient ?: (io : ConfigSocketIOGetClientConnected) => Promise<void> | undefined,
     getConfig? : (config : ConfigSocketIO) => void | Promise<void>,
-    settings? : ConfigServerSocketIOSettings | undefined,
+    options ?: ConfigServerSocketIOOptions,
     plugins? : ConfigSocketIOPlugins | undefined,
     Constanta ?: ConfigSystemMultiTypes | undefined
 }

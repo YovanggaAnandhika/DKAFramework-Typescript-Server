@@ -1,19 +1,24 @@
-import { FastifyConfigurationDefault, ReactJSConfigurationDefault, SocketIOClientConfigurationDefault, SocketIOConfigurationDefault } from "./Config";
+import {
+    FastifyConfigurationDefault,
+    ReactJSConfigurationDefault,
+    SocketIOClientConfigurationDefault,
+    SocketIOConfigurationDefault
+} from "./Config";
 import * as DKATypes from "./Type/types";
 import {merge} from "lodash";
 import * as tcpPortUsed from "tcp-port-used";
-import * as ngrok from "ngrok";
 import {Logger} from "winston";
 import FASTIFY from "./Component/FASTIFY";
 import SOCKET_IO from "./Component/SocketIO";
 import {DKAServerCallback} from "./Interfaces/Callback";
 import Options from "./Const";
 import mLogger from "./Function/Helper/logger";
-import { Delay } from "./Function/Helper/Delay";
+import {Delay} from "./Function/Helper/Delay";
 import {CliProgress} from "./Function/Helper/CliProgress";
 import {ConfigFastify, ConfigReactJS, ConfigSocketIO, ConfigSocketIOClient} from "./Interfaces/Config";
 import REACTJS from "./Component/REACTJS";
 import SOCKET_IO_CLIENT from "./Component/SocketIOClient";
+
 /** Declare Variable **/
 let mTempFastify : ConfigFastify | never = { engine : "FASTIFY" };
 let mTempSocketIO : ConfigSocketIO = { engine : "SOCKET.IO" };
@@ -347,7 +352,7 @@ export async function Client(config : ConfigSocketIOClient = SocketIOClientConfi
                 await Delay(mTempSocketIOClient.Constanta?.DEFAULT_DELAY_PROGRESS);
                 /** ================= DEBUG CONSOLE ======================= **/
                 await SOCKET_IO_CLIENT(mTempSocketIOClient)
-                    .then(async () => {
+                    .then(async (io) => {
                         (mTempSocketIOClient.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
                             logger.info(`Server "SOCKET.IO Client" Running Successfully - port : "${mTempSocketIOClient.port}"`) : null;
                         await resolve({

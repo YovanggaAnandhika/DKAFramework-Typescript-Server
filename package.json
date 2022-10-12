@@ -1,7 +1,7 @@
 {
   "name": "@dkaframework/server",
   "description": "The Multi Framework Server Function. Part Module Of DKAFramework",
-  "version": "1.0.12",
+  "version": "1.0.28",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": {

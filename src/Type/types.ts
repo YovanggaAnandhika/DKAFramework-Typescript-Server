@@ -6,10 +6,9 @@ import {ExtendedError} from "socket.io/dist/namespace";
 import {
     ConfigFastify,
     ConfigReactJS,
-    ConfigServerSocketIOSettingsSecurityAuthorizationCallbackBasic,
-    ConfigServerSocketIOSettingsSecurityAuthorizationCallbackOauth,
-    ConfigSocketIO,
-    ConfigSocketIOClient
+    ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic,
+    ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth,
+    ConfigSocketIO
 } from "../Interfaces/Config";
 
 export * from "fastify";
@@ -22,10 +21,10 @@ export type SocketIOInstancesMiddleware = (io : Socket<DefaultEventsMap, Default
 export type FastifyRegistringPlugins = (app : FastifyInstance) => Promise<FastifyInstance>;
 export type FastifyInstances = (app : FastifyInstance, opts: FastifyPluginOptions, next : any) => Promise<void> | void | undefined;
 export type SocketIOInstancesClient = (io : SocketIOInstanceClient) => Promise<void> | void | undefined;
-export type SocketIOMiddleware = (io : ConfigServerSocketIOSettingsSecurityAuthorizationCallbackOauth, next : (error ?: Error) => void) => void | Promise<void>;
+export type SocketIOMiddleware = (io : ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next : (error ?: Error) => void) => void | Promise<void>;
 
-export type SecurityAuthorizationCallbackOauth = (callback : ConfigServerSocketIOSettingsSecurityAuthorizationCallbackOauth, next : (error ?: Error) => void) => void | Promise<void>;
-export type SecurityAuthorizationCallbackBasic = (callback : ConfigServerSocketIOSettingsSecurityAuthorizationCallbackBasic, next : (error ?: Error) => void) => void | Promise<void>;
+export type SecurityAuthorizationCallbackOauth = (callback : ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next : (error ?: Error) => void) => void | Promise<void>;
+export type SecurityAuthorizationCallbackBasic = (callback : ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic, next : (error ?: Error) => void) => void | Promise<void>;
 export type SecurityAuthorizationMode = "OAUTH2" | "BASIC";
 export type State = "none" | "development" | "production";
 export type EngineFastify = "FASTIFY";

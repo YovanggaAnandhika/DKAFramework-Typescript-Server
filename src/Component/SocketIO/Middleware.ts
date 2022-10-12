@@ -12,7 +12,7 @@ export const middleware = async (config : ConfigSocketIO) : Promise<SocketIOInst
     (config.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
         logger.info(`Socket.IO use Middleware Decorator`) : null;
     /** ================= DEBUG CONSOLE ======================= **/
-    let mAuth = config.settings?.security?.authorization;
+    let mAuth = config.options?.socket?.security?.authorization;
     let headers = io.request.headers;
     /** ================= DEBUG CONSOLE ======================= **/
     (config.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
