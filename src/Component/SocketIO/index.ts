@@ -20,6 +20,7 @@ import {createAdapter} from "@socket.io/redis-adapter";
  */
 
 let mClientList : Array<Socket<DefaultEventsMap, DefaultEventsMap, any>> = [];
+
 const SOCKET_IO = async (config : ConfigSocketIO) : Promise<mServerHTTP | mServerHTTPS> => {
     let mHttp : mServerHTTP | mServerHTTPS;
     switch (config.options?.server?.protocol) {
