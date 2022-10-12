@@ -1,5 +1,6 @@
 {
   "name": "@dkaframework/server",
+  "description": "The Multi Framework Server Function. Part Module Of DKAFramework",
   "version": "1.0.12",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,20 +11,17 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev-fastify" : "ts-node test/index.fastify.ts",
+    "dev-fastify": "ts-node test/index.fastify.ts",
     "dev-client": "ts-node test/index-client.ts",
     "dev-server": "ts-node test/index-server.ts",
     "build": "tsc --build"
   },
   "dependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/register": "^7.18.9",
     "@socket.io/cluster-adapter": "^0.2.0",
     "@socket.io/redis-adapter": "^7.2.0",
     "@types/cli-progress": "^3.11.0",
     "@types/lodash": "^4.14.182",
-    "@types/node": "^18.7.15",
+    "@types/node": "^18.8.4",
     "@types/nodemon": "^1.19.2",
     "@types/tcp-port-used": "^1.0.1",
     "ansi-colors": "^4.1.3",

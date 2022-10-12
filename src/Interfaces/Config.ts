@@ -1,5 +1,10 @@
-import Webpack, {Configuration, Compiler as WebpackCompiler, MultiCompiler as WebpackMultiCompiler, EntryObject } from "webpack";
-import { Configuration as WebpackDevConfig } from "webpack-dev-server";
+import Webpack, {
+    Compiler as WebpackCompiler,
+    Configuration,
+    EntryObject,
+    MultiCompiler as WebpackMultiCompiler
+} from "webpack";
+import {Configuration as WebpackDevConfig} from "webpack-dev-server";
 import {
     EngineFastify,
     EngineReactJS,
@@ -13,7 +18,8 @@ import {
     SocketIOInstanceClient,
     SocketIOInstances,
     SocketIOInstancesClient,
-    SocketIOInstancesMiddleware, SocketIOInstanceSocket,
+    SocketIOInstancesMiddleware,
+    SocketIOInstanceSocket,
     State
 } from "../Type/types";
 import {Server, ServerOptions} from "socket.io";
@@ -275,5 +281,9 @@ export type ConfigReactJS = {
     getConfig? : (config : ConfigReactJS) => void | Promise<void>,
     Constanta ?: ConfigSystemMultiTypes | undefined
 };
+
+/*export type ConfigReactJS = WebpackDevConfig | WebpackDevCompiler | WebpackDevMultiCompiler & {
+    engine : EngineReactJS
+}*/
 
 

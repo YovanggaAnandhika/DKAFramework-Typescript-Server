@@ -1,17 +1,12 @@
-import webpack, { Configuration } from "webpack";
 import webpackDev from "webpack-dev-server";
-import { ConfigReactJS } from "../../Interfaces/Config";
-import {reject} from "lodash";
-import * as fs from "fs";
-import path from "path";
-import {existsSync} from "fs";
+import {ConfigReactJS} from "../../Interfaces/Config";
 
 
 export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
 
     return new Promise(async (resolve, rejected) => {
 
-        let mCompile = webpack({
+        /*let mCompile = webpack({
             mode : config.state,
             entry : config.entry,
             plugins : config.plugins,
@@ -45,8 +40,8 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
             resolve : {
                     extensions: [ '.tsx', '.ts', '.js' ],
             }
-        });
-        let mWebpackDev = new webpackDev(config.serverConfig, mCompile);
+        });*/
+        let mWebpackDev = new webpackDev(config, config);
         await resolve(mWebpackDev)
     });
 
