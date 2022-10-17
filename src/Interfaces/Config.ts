@@ -1,12 +1,15 @@
 import Webpack, {
     Compiler as WebpackCompiler,
-    Configuration,
-    EntryObject,
-    MultiCompiler as WebpackMultiCompiler
+    Configuration as WebpackConfiguration,
+    EntryObject as WebpackEntryObject,
+    MultiCompiler as WebpackMultiCompiler,
+    MultiStats as WebpackMultiStats,
+    Stats as WebpackStats,
 } from "webpack";
+import {Options as HTMLWebpackPluginOptions} from "html-webpack-plugin";
 import http, {ServerOptions as ServerOptionsHttp} from "http";
 import {ServerOptions as ServerOptionsHttps} from "https";
-import {Configuration as WebpackDevConfig} from "webpack-dev-server";
+import {Compiler as WebpackDevCompiler, Configuration as WebpackDevConfig} from "webpack-dev-server";
 import {
     EngineFastify,
     EngineReactJS,
@@ -15,6 +18,7 @@ import {
     FastifyInstances,
     FastifyRegistringPlugins,
     MetaDataSocketIOClient,
+    Mode,
     SecurityAuthorizationCallbackBasic,
     SecurityAuthorizationCallbackOauth,
     SocketIOInstanceClient,
@@ -274,32 +278,77 @@ export interface ConfigSocketIOClient {
 
 
 export interface ConfigReactJSConfig {
-    compiler : Configuration
+    compiler : WebpackConfiguration
 }
 
 export type webpackDevTypes = WebpackCompiler | WebpackMultiCompiler | WebpackDevConfig;
 
-export type ConfigReactJS = {
+interface CallbackWebpack<T> {
+    (err?: Error, stats?: T): void;
+}
+
+export type ConfigReactJSOptionsWebpackConfiguration = WebpackConfiguration;
+export type ConfigReactJSOptionsWebpackConfigurationArray = readonly ConfigReactJSOptionsWebpackConfiguration[] & MultiCompilerOptions
+
+export interface ConfigReactJSOptionsWebpackCompiler {
+    configuration ?: ConfigReactJSOptionsWebpackConfiguration | undefined,
+    callback ?: CallbackWebpack<WebpackStats>
+}
+
+interface MultiCompilerOptions {
+    /**
+     * how many Compilers are allows to run at the same time in parallel
+     */
+    parallelism?: number;
+}
+
+export interface ConfigReactJSOptionsWebpackMultiCompiler {
+    configuration ?: readonly ConfigReactJSOptionsWebpackConfiguration[] & MultiCompilerOptions,
+    callback ?: CallbackWebpack<WebpackMultiStats> | undefined
+}
+
+export interface ConfigReactJSOptionsPath {
+
+}
+export interface ConfigReactJSOptions {
+    Webpack ?: ConfigReactJSOptionsWebpackCompiler | ConfigReactJSOptionsWebpackMultiCompiler,
+    WebpackDev ?: WebpackDevCompiler | WebpackDevConfig | WebpackMultiCompiler,
+    Path ?: ConfigReactJSOptionsPath
+}
+
+export type ConfigReactJSPluginsDefault = (
+    | ((this: WebpackCompiler, compiler: WebpackCompiler) => void)
+    | Webpack.WebpackPluginInstance
+    )[];
+
+export interface ConfigReactJSPluginsModelHtmlWebpackPlugin {
+    enabled ?: boolean,
+    options ?: HTMLWebpackPluginOptions
+}
+export interface ConfigReactJSPluginsModel {
+    HtmlWebpackPlugin ?: ConfigReactJSPluginsModelHtmlWebpackPlugin,
+    costumPlugins ?: ConfigReactJSPluginsDefault
+}
+
+export interface ConfigReactJS {
     /**
      * The State Development or Production
      * **/
     state? : State,
     host ?: string | undefined,
     port ?: number | undefined,
+    mode ?: Mode | undefined,
     engine : EngineReactJS,
     entry ?:
         | string
-        | (() => string | EntryObject | string[] | Promise<string | EntryObject | string[]>)
-        | EntryObject
+        | (() => string | WebpackEntryObject | string[] | Promise<string | WebpackEntryObject | string[]>)
+        | WebpackEntryObject
         | string[],
-    plugins ?: (
-        | ((this: WebpackCompiler, compiler: WebpackCompiler) => void)
-        | Webpack.WebpackPluginInstance
-        )[],
-    serverConfig ?: webpackDevTypes,
+    plugins ?: ConfigReactJSPluginsModel,
+    options ?: ConfigReactJSOptions
     getConfig? : (config : ConfigReactJS) => void | Promise<void>,
     Constanta ?: ConfigSystemMultiTypes | undefined
-};
+}
 
 /*export type ConfigReactJS = WebpackDevConfig | WebpackDevCompiler | WebpackDevMultiCompiler & {
     engine : EngineReactJS

@@ -9,6 +9,8 @@
     // Generate d.ts files
     "removeComments": false,
     "declaration": true,
+    "jsx": "react",
+    "strictNullChecks": false,
     // Types should go into this directory.
     // Removing this would place the .d.ts files
     // next to the .js files
@@ -20,6 +22,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
+  "moduleResolution": "node",
   "exclude": [
     "node_modules",
     "dist",

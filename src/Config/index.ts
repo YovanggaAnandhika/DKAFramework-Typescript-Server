@@ -60,7 +60,6 @@ export const SocketIOConfigurationDefault : ConfigSocketIO = {
     },
     port : Const.Server.Port.DEFAULT
 }
-
 export const SocketIOClientConfigurationDefault : ConfigSocketIOClient = {
     state : Const.Server.State.SERVER_STATE_DEVELOPMENT,
     engine : Const.Server.Engine.SOCKETIOCLIENT,
@@ -75,5 +74,10 @@ export const ReactJSConfigurationDefault : ConfigReactJS = {
     state : Const.Server.State.SERVER_STATE_DEVELOPMENT,
     engine : Const.Server.Engine.REACTJS,
     host : Const.Server.Host.LOCALHOST,
-    port : Const.Server.Port.DEFAULT
+    port : Const.Server.Port.DEFAULT,
+    plugins : {
+        HtmlWebpackPlugin : {
+            enabled : true
+        }
+    }
 }

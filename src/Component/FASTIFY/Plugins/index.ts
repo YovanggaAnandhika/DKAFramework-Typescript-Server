@@ -1,14 +1,10 @@
 import {ConfigFastify} from "../../../Interfaces/Config";
-import Fastify, {FastifyInstance} from "fastify";
-import {existsSync} from "fs";
-import {check} from "tcp-port-used";
+import {FastifyInstance} from "fastify";
 import Options from "../../../Const";
 import {Logger} from "winston";
-import * as ngrok from "ngrok";
 import mLogger from "../../../Function/Helper/logger";
 import {CliProgress} from "../../../Function/Helper/CliProgress";
 import Delay from "../../../Function/Helper/Delay";
-import {reject} from "lodash";
 
 let logger : Logger = mLogger.logger;
 
@@ -47,7 +43,7 @@ export async function ServerViewInstance(config : ConfigFastify, app : FastifyIn
                 }else{
                     /** ================= DEBUG CONSOLE ======================= **/
                     (config.state === Options.Server.State.SERVER_STATE_DEVELOPMENT)?
-                        CliProgress.increment({ state : config.state, status : Options.READY_STATE, descriptions : "plugin point of view enabled. but module not found. skipped" }) : null;
+                        CliProgress.increment({ state : config.state, status : Options.READY_STATE, descriptions : "plugin point of view enabled. but module `@fastify/view` not found. skipped" }) : null;
                     await CliProgress.setTotal(CliProgress.getTotal())
                     await Delay(config.Constanta?.DEFAULT_DELAY_PROGRESS);
                     /** ================= DEBUG CONSOLE ======================= **/
@@ -123,30 +119,31 @@ export async function ServerNgrokTunnelingInstance(config : ConfigFastify, app :
                     await Delay(config.Constanta?.DEFAULT_DELAY_PROGRESS);
                     /** ================= DEBUG CONSOLE ======================= **/
                     if (config.plugins.ngrok.settings){
+                        const ngrok = require("ngrok");
                         await ngrok.authtoken(config.plugins.ngrok.settings.authToken as string)
                             .then(async () => {
                                 await ngrok.connect({
                                     proto : config.plugins?.ngrok?.settings?.proto,
                                     addr : config.port
-                                }).then(async (e) => {
+                                }).then(async () => {
                                     let api = ngrok.getApi();
                                     switch (config.plugins?.ngrok?.settings?.proto){
                                         case "http" :
                                             await api?.listTunnels()
-                                                .then(async (result) => {
+                                                .then(async (result : any) => {
                                                     console.log([ result.tunnels[0].public_url, result.tunnels[1].public_url])
                                                 })
-                                                .catch(async (error) => {
+                                                .catch(async (error : any) => {
                                                     await rejected({ status : false, code : 500, msg : `ngrok list Tunnels Error`, error : error});
                                                 });
                                             await resolve(app);
                                             break;
                                         case "tcp" :
                                             await api?.listTunnels()
-                                                .then(async (result) => {
+                                                .then(async (result : any) => {
                                                     console.log([ result.tunnels[0].public_url])
                                                 })
-                                                .catch(async (error) => {
+                                                .catch(async (error : any) => {
                                                     await rejected({ status : false, code : 500, msg : `ngrok list Tunnels Error`, error : error});
                                                 })
                                             await resolve(app);
@@ -155,10 +152,10 @@ export async function ServerNgrokTunnelingInstance(config : ConfigFastify, app :
                                             await rejected({ status : false, code : 500, msg : `ngrok unknown proto method`});
                                     }
 
-                                }).catch(async (error) => {
+                                }).catch(async (error : any) => {
                                     await rejected({ status : false, code : 500, msg : `ngrok error connect`, error : error});
                                 })
-                            }).catch(async (error) => {
+                            }).catch(async (error : any) => {
                                 await rejected({ status : false, code : 500, msg : `ngrok error auth token`, error : error});
                             });
                     } else{

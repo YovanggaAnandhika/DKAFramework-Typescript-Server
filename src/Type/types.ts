@@ -27,6 +27,7 @@ export type SecurityAuthorizationCallbackOauth = (callback : ConfigServerSocketI
 export type SecurityAuthorizationCallbackBasic = (callback : ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic, next : (error ?: Error) => void) => void | Promise<void>;
 export type SecurityAuthorizationMode = "OAUTH2" | "BASIC";
 export type State = "none" | "development" | "production";
+export type Mode = "compile" | "server";
 export type EngineFastify = "FASTIFY";
 
 /**
