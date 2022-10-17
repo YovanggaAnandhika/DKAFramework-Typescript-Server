@@ -1,7 +1,8 @@
 import Webpack, {Compiler as WebpackCompiler} from "webpack";
 import {merge} from "lodash";
 import {ConfigReactJS} from "../../../Interfaces/Config";
-import HtmlWebpackPlugin from "html-webpack-plugin";
+import HtmlWebpackPlugin, {Options} from "html-webpack-plugin";
+import path from "path";
 
 
 type PluginsWebpackTypes = (
@@ -13,10 +14,13 @@ export async function Plugins(config : ConfigReactJS) : Promise<PluginsWebpackTy
     return new Promise(async (resolve, rejected) => {
         let pluginsModules : PluginsWebpackTypes = [];
 
-        pluginsModules.push(new Webpack.HotModuleReplacementPlugin());
-
-        if (config.plugins?.HtmlWebpackPlugin.enabled as boolean){
-            pluginsModules.push(new HtmlWebpackPlugin(config.plugins.HtmlWebpackPlugin.options))
+        if (config.plugins?.HtmlWebpackPlugin.enabled){
+            let defaultOptionsHTMLWebpackPlugin : Options = {
+                inject : "body",
+                template : path.join(__dirname,"./../Template/index.html")
+            }
+            let mergeConfigOptionsHTMLWebpackPlugin : Options = merge(defaultOptionsHTMLWebpackPlugin, config.plugins.HtmlWebpackPlugin.options)
+            pluginsModules.push(new HtmlWebpackPlugin(mergeConfigOptionsHTMLWebpackPlugin))
         }
 
         await config.plugins?.costumPlugins?.forEach(function (value) {

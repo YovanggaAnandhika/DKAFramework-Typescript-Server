@@ -7,12 +7,6 @@ export async function Rules(config : ConfigReactJS) : Promise<(RuleSetRule | "..
         let WebpackRules : (RuleSetRule | "...")[] = [];
 
         WebpackRules.push({
-            test: /\.tsx?$/,
-            exclude: /node_modules/,
-            loader: 'ts-loader'
-        });
-
-        WebpackRules.push({
             test: /\.(ts|js)x?$/,
             exclude: /node_modules/,
             use: {
@@ -26,6 +20,6 @@ export async function Rules(config : ConfigReactJS) : Promise<(RuleSetRule | "..
                 },
             },
         });
-        resolve(WebpackRules);
+        await resolve(WebpackRules);
     })
 }

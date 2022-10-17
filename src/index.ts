@@ -264,46 +264,34 @@ export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigRea
                 /** ================= DEBUG CONSOLE ======================= **/
                 await REACTJS(mTempReactJS)
                     .then(async (server) => {
-                        if (config.mode === undefined || config.mode === "server"){
-                            await server.start()
-                                .then(async () => {
-                                    (mTempReactJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
-                                        logger.info(`Server Running Successfully - port : "${mTempReactJS.port}"`) : null;
-                                    await resolve({
-                                        status: true,
-                                        code: 200,
-                                        msg: `Server Running Successfully`,
-                                        metadata: {
-                                            author: Options.Information.author,
-                                            version: Options.Information.version
-                                        }
-                                    });
-                                })
-                                .catch(async (error) => {
-                                    await rejected({
-                                        status: false,
-                                        code: 500,
-                                        msg: `Server Listenning Failed`,
-                                        error: {
-                                            errorNames: "DKA_SERVER_REACT_JS_LISTENING_ERROR",
-                                            raw : error
-                                        }
-                                    });
-                                    setTimeout(async () => {
-                                        await process.exit(0);
-                                    }, 2000);
+                        await server.start()
+                            .then(async () => {
+                                (mTempReactJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                                    logger.info(`Server Running Successfully - port : "${mTempReactJS.port}"`) : null;
+                                await resolve({
+                                    status: true,
+                                    code: 200,
+                                    msg: `Server Running Successfully`,
+                                    metadata: {
+                                        author: Options.Information.author,
+                                        version: Options.Information.version
+                                    }
                                 });
-                        }else{
-                            await resolve({
-                                status: true,
-                                code: 200,
-                                msg: `Compile Running Successfully`,
-                                metadata: {
-                                    author: Options.Information.author,
-                                    version: Options.Information.version
-                                }
+                            })
+                            .catch(async (error) => {
+                                await rejected({
+                                    status: false,
+                                    code: 500,
+                                    msg: `Server Listenning Failed`,
+                                    error: {
+                                        errorNames: "DKA_SERVER_REACT_JS_LISTENING_ERROR",
+                                        raw : error
+                                    }
+                                });
+                                setTimeout(async () => {
+                                    await process.exit(0);
+                                }, 2000);
                             });
-                        }
                     })
                     .catch(async (error) => {
                         await rejected({

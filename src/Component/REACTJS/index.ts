@@ -9,7 +9,6 @@ import {
     ConfigReactJSOptionsWebpackConfiguration,
     ConfigReactJSOptionsWebpackConfigurationArray,
 } from "../../Interfaces/Config";
-import path from "path";
 import {merge} from "lodash";
 import {Plugins} from "./Middleware/Plugins";
 import {Rules} from "./Middleware/Rules";
@@ -65,7 +64,7 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
                                     entry : entry,
                                     plugins : plugins,
                                     output: {
-                                        path: path.resolve(__dirname, './public'),
+
                                         publicPath : "/",
                                         filename: 'DKAFramework.js',
                                     },
@@ -75,6 +74,10 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
                                     resolve : {
                                         extensions: [ '.tsx', '.ts', '.js','.jsx' ],
                                     }
+                                }
+
+                                if (config.settings?.buildOutputFile?.enabled){
+                                    defaultConfigurationWebpack.output.path = config.settings.buildOutputFile.path
                                 }
                                 let configurationWebpackMergered : ConfigReactJSOptionsWebpackConfiguration = merge(defaultConfigurationWebpack, config?.options?.Webpack?.configuration);
 

@@ -79,5 +79,26 @@ export const ReactJSConfigurationDefault : ConfigReactJS = {
         HtmlWebpackPlugin : {
             enabled : true
         }
+    },
+    settings : {
+        buildOutputFile : {
+            enabled : false,
+            path : path.join(require.main.path, "./public")
+        }
+    },
+    options : {
+        Webpack : {
+            configuration : {
+                output : {
+                    publicPath : "/",
+                    filename : "dkaframework.js"
+                }
+            }
+        },
+        WebpackDev : {
+            open : false,
+            hot : true,
+            historyApiFallback: true
+        }
     }
 }

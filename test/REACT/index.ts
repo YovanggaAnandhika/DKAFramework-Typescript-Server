@@ -1,28 +1,17 @@
-import {Options, Server} from "../../src";
+import {Options, Server} from "../../dist";
+import path from "path";
 
 (async () => {
 
     let io = await Server({
         state : Options.Server.State.SERVER_STATE_DEVELOPMENT,
         engine : Options.Server.Engine.REACTJS,
-        mode : "server",
-        port : 213,
-        plugins : {
-          HtmlWebpackPlugin : {
-              options : {
-
-              }
-          }
-        },
-        options : {
-            WebpackDev : {
-                open : true,
-                hot : true,
-                historyApiFallback: true,
-                liveReload : true,
-            }
-        }
-    });
+        entry : path.join(__dirname, "./app.tsx"),
+        port : 213
+    })
+        .catch(async (error) => {
+            console.log(error)
+        })
 
 
 

@@ -10,7 +10,7 @@ export async function Webpack(config : ConfigReactJSOptionsWebpackConfiguration)
             if (!error){
                 resolve(mCompiler);
             }else{
-                rejected(error);
+                rejected({ status : false, code : 500, msg : `error processing stats Webpack compile`, error : error});
             }
         })
     })

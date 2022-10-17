@@ -9,7 +9,7 @@ import Webpack, {
 import {Options as HTMLWebpackPluginOptions} from "html-webpack-plugin";
 import http, {ServerOptions as ServerOptionsHttp} from "http";
 import {ServerOptions as ServerOptionsHttps} from "https";
-import {Compiler as WebpackDevCompiler, Configuration as WebpackDevConfig} from "webpack-dev-server";
+import {Configuration as WebpackDevConfig} from "webpack-dev-server";
 import {
     EngineFastify,
     EngineReactJS,
@@ -18,7 +18,6 @@ import {
     FastifyInstances,
     FastifyRegistringPlugins,
     MetaDataSocketIOClient,
-    Mode,
     SecurityAuthorizationCallbackBasic,
     SecurityAuthorizationCallbackOauth,
     SocketIOInstanceClient,
@@ -307,13 +306,9 @@ export interface ConfigReactJSOptionsWebpackMultiCompiler {
     callback ?: CallbackWebpack<WebpackMultiStats> | undefined
 }
 
-export interface ConfigReactJSOptionsPath {
-
-}
 export interface ConfigReactJSOptions {
     Webpack ?: ConfigReactJSOptionsWebpackCompiler | ConfigReactJSOptionsWebpackMultiCompiler,
-    WebpackDev ?: WebpackDevCompiler | WebpackDevConfig | WebpackMultiCompiler,
-    Path ?: ConfigReactJSOptionsPath
+    WebpackDev ?: WebpackDevConfig,
 }
 
 export type ConfigReactJSPluginsDefault = (
@@ -330,6 +325,17 @@ export interface ConfigReactJSPluginsModel {
     costumPlugins ?: ConfigReactJSPluginsDefault
 }
 
+export interface ConfigReactJSSettingsBuildOutputFileSettings {
+    path ?: string
+}
+export interface ConfigReactJSSettingsBuildOutputFile {
+    enabled ?: boolean,
+    path : string
+}
+export interface ConfigReactJSSettings {
+    buildOutputFile ?: ConfigReactJSSettingsBuildOutputFile
+}
+
 export interface ConfigReactJS {
     /**
      * The State Development or Production
@@ -337,7 +343,6 @@ export interface ConfigReactJS {
     state? : State,
     host ?: string | undefined,
     port ?: number | undefined,
-    mode ?: Mode | undefined,
     engine : EngineReactJS,
     entry ?:
         | string
@@ -345,7 +350,8 @@ export interface ConfigReactJS {
         | WebpackEntryObject
         | string[],
     plugins ?: ConfigReactJSPluginsModel,
-    options ?: ConfigReactJSOptions
+    options ?: ConfigReactJSOptions,
+    settings ?: ConfigReactJSSettings,
     getConfig? : (config : ConfigReactJS) => void | Promise<void>,
     Constanta ?: ConfigSystemMultiTypes | undefined
 }
