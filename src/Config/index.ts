@@ -77,13 +77,15 @@ export const ReactJSConfigurationDefault : ConfigReactJS = {
     port : Const.Server.Port.DEFAULT,
     plugins : {
         HtmlWebpackPlugin : {
-            enabled : true
+            enabled : true,
+            options : {
+                inject : false
+            }
         }
     },
     settings : {
         buildOutputFile : {
-            enabled : false,
-            path : path.join(require.main.path, "./public")
+            enabled : false
         }
     },
     options : {
@@ -91,7 +93,7 @@ export const ReactJSConfigurationDefault : ConfigReactJS = {
             configuration : {
                 output : {
                     publicPath : "/",
-                    filename : "dkaframework.js"
+                    filename : "DKAFramework.js"
                 }
             }
         },

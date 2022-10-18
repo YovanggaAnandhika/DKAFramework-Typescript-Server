@@ -64,9 +64,8 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
                                     entry : entry,
                                     plugins : plugins,
                                     output: {
-
                                         publicPath : "/",
-                                        filename: 'DKAFramework.js',
+                                        filename: 'DKAFramework.js'
                                     },
                                     module : {
                                         rules : rules
@@ -76,7 +75,7 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
                                     }
                                 }
 
-                                if (config.settings?.buildOutputFile?.enabled){
+                                if (config.settings?.buildOutputFile?.enabled === true){
                                     defaultConfigurationWebpack.output.path = config.settings.buildOutputFile.path
                                 }
                                 let configurationWebpackMergered : ConfigReactJSOptionsWebpackConfiguration = merge(defaultConfigurationWebpack, config?.options?.Webpack?.configuration);

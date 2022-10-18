@@ -330,7 +330,7 @@ export interface ConfigReactJSSettingsBuildOutputFileSettings {
 }
 export interface ConfigReactJSSettingsBuildOutputFile {
     enabled ?: boolean,
-    path : string
+    path ?: string
 }
 export interface ConfigReactJSSettings {
     buildOutputFile ?: ConfigReactJSSettingsBuildOutputFile

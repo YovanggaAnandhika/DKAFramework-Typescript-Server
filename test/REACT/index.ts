@@ -1,4 +1,4 @@
-import {Options, Server} from "../../dist";
+import {Options, Server} from "../../src";
 import path from "path";
 
 (async () => {
@@ -7,7 +7,10 @@ import path from "path";
         state : Options.Server.State.SERVER_STATE_DEVELOPMENT,
         engine : Options.Server.Engine.REACTJS,
         entry : path.join(__dirname, "./app.tsx"),
-        port : 213
+        port : 213,
+        settings : {
+
+        }
     })
         .catch(async (error) => {
             console.log(error)
