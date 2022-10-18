@@ -9,8 +9,7 @@ export async function WebpackDev(config : ConfigReactJS, WebpackCompiler : Webpa
         let mWebpackCompilerOptions : WebpackDevConfig= {
             host : config.host,
             port : config.port,
-            historyApiFallback : config.options.WebpackDev.historyApiFallback,
-            static : config.options.WebpackDev.static
+            historyApiFallback : config.options.WebpackDev.historyApiFallback
         }
         let mWebpackDevDefaultCompilerOptions : WebpackDevConfig = merge(mWebpackCompilerOptions, config.options?.WebpackDev)
         let mWebpackDev = new webpackDev(mWebpackDevDefaultCompilerOptions, WebpackCompiler);

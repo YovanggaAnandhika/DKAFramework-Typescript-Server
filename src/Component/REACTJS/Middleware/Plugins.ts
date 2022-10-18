@@ -17,6 +17,7 @@ export async function Plugins(config : ConfigReactJS) : Promise<PluginsWebpackTy
         if (config.plugins?.HtmlWebpackPlugin.enabled){
             let defaultOptionsHTMLWebpackPlugin : Options = {
                 template : path.join(__dirname,"./../Template/index.html"),
+
             }
             let mergeConfigOptionsHTMLWebpackPlugin : Options = merge(defaultOptionsHTMLWebpackPlugin, config.plugins.HtmlWebpackPlugin.options)
             pluginsModules.push(new HtmlWebpackPlugin(mergeConfigOptionsHTMLWebpackPlugin))

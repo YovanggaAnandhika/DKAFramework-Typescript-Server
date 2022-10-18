@@ -8,8 +8,10 @@ import path from "path";
         engine : Options.Server.Engine.REACTJS,
         entry : path.join(__dirname, "./app.tsx"),
         port : 213,
-        settings : {
-
+        options : {
+            WebpackDev : {
+                open : true
+            }
         }
     })
         .catch(async (error) => {

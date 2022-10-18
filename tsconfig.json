@@ -11,11 +11,10 @@
     "declaration": true,
     "jsx": "react",
     "strictNullChecks": false,
-    "rootDir": "src",
     // Types should go into this directory.
     // Removing this would place the .d.ts files
     // next to the .js files
-    "outDir": "dist",
+    /*"outDir": "dist",*/
     // go to js file when using IDE functions like
     // "Go to Definition" in VSCode
     "declarationMap": true,
@@ -23,7 +22,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "moduleResolution": "node",
   "exclude": [
     "node_modules",
     "dist",

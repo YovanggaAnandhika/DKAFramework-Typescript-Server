@@ -1,14 +1,5 @@
 import webpackDev from "webpack-dev-server";
-import {
-    Compiler as WebpackCompiler,
-    Configuration as WebpackConfiguration,
-    MultiCompiler as WebpackMultiCompiler
-} from "webpack";
-import {
-    ConfigReactJS,
-    ConfigReactJSOptionsWebpackConfiguration,
-    ConfigReactJSOptionsWebpackConfigurationArray,
-} from "../../Interfaces/Config";
+import {ConfigReactJS, ConfigReactJSOptionsWebpackConfiguration,} from "../../Interfaces/Config";
 import {merge} from "lodash";
 import {Plugins} from "./Middleware/Plugins";
 import {Rules} from "./Middleware/Rules";
@@ -27,31 +18,10 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
         }
     }
 
-
-
-    let reactProcessing : Promise<webpackDev> = new Promise(async (resolve, rejected) => {
-
-        let WebpackCompiler : WebpackCompiler | WebpackMultiCompiler | WebpackConfiguration;
-
-        /*let entryRefactor : string = ``;
-        if (config.entry !== undefined && fs.existsSync(`${config.entry}`)){
-            entryRefactor = `${config.entry}`
-        }else{
-            if (fs.existsSync(path.join(__dirname, "app.tsx"))){
-                entryRefactor = path.join(__dirname, "app.tsx");
-            }else{
-                if (fs.existsSync(path.join(__dirname, "app.jsx"))){
-                    entryRefactor = path.join(__dirname, "app.jsx");
-                }else{
-
-                    if (fs.existsSync(path.join(__dirname, "app.js"))){
-                        entryRefactor = path.join(__dirname, "app.js");
-                    }else{
-                        entryRefactor = ``;
-                    }
-                }
-            }
-        }*/
+    /**
+     * @return Promise<webpackDev>
+     */
+    return new Promise(async (resolve, rejected) => {
 
         await Entry(config)
             .then(async (entry) => {
@@ -59,32 +29,36 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
                     .then(async (plugins) => {
                         await Rules(config)
                             .then(async (rules) => {
-                                let defaultConfigurationWebpack : ConfigReactJSOptionsWebpackConfiguration | ConfigReactJSOptionsWebpackConfigurationArray = {
-                                    mode : config.state,
-                                    entry : entry,
-                                    plugins : plugins,
+                                let defaultConfigurationWebpack: ConfigReactJSOptionsWebpackConfiguration = {
+                                    mode: config.state,
+                                    entry: entry,
+                                    plugins: plugins,
+                                    infrastructureLogging: {
+                                        level: "error"
+                                    },
+                                    stats: "errors-only",
                                     output: {
-                                        publicPath : "/",
+                                        publicPath: "/",
                                         filename: 'DKAFramework.js'
                                     },
-                                    module : {
-                                        rules : rules
+                                    module: {
+                                        rules: rules
                                     },
-                                    resolve : {
-                                        extensions: [ '.tsx', '.ts', '.js','.jsx' ],
+                                    resolve: {
+                                        extensions: ['.tsx', '.ts', '.js', '.jsx'],
                                     }
                                 }
 
-                                if (config.settings?.buildOutputFile?.enabled === true){
+                                /*if (config.settings?.buildOutputFile?.enabled === true) {
                                     defaultConfigurationWebpack.output.path = config.settings.buildOutputFile.path
-                                }
-                                let configurationWebpackMergered : ConfigReactJSOptionsWebpackConfiguration = merge(defaultConfigurationWebpack, config?.options?.Webpack?.configuration);
+                                }*/
+                                let configurationWebpackMergered: ConfigReactJSOptionsWebpackConfiguration = merge(defaultConfigurationWebpack, config?.options?.Webpack?.configuration);
 
                                 Webpack(configurationWebpackMergered)
                                     .then(async (compiler) => {
                                         await WebpackDev(config, compiler)
                                             .then(async (server) => {
-                                               await resolve(server);
+                                                await resolve(server);
                                             })
                                             .catch(async (error) => {
                                                 rejected(error)
@@ -107,13 +81,7 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
             })
 
 
-
-
     });
-    /**
-     * @return Promise<webpackDev>
-     */
-    return reactProcessing;
 }
 
 export default REACTJS;

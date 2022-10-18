@@ -253,18 +253,39 @@ export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigRea
                 await Delay(mTempReactJS.Constanta?.DEFAULT_DELAY_PROGRESS);
                 /** ================= DEBUG CONSOLE ======================= **/
                 //$$$$$$$$$$$ DELETE GET CONFIG FUNCTION FOR GET CONFIG $$$$$$$$$$$$
-
-                /** ================= DEBUG CONSOLE ======================= **/
-                (mTempReactJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
-                    logger.info(`Socket IO Engine Selected Started`) : null;
-                /** ================= DEBUG CONSOLE ======================= **/
-                /** ================= DEBUG CONSOLE ======================= **/
-                (mTempReactJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
-                    logger.info(`ReactJS Selected Started`) : null;
-                /** ================= DEBUG CONSOLE ======================= **/
                 await REACTJS(mTempReactJS)
                     .then(async (server) => {
-                        await server.start()
+                        await server.listen(config.port, config.host, async (error) => {
+                            if (!error){
+                                /** ================= DEBUG CONSOLE ======================= **/
+                                (mTempReactJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                                    logger.info(`Finish Prosessing Library`) : null;
+                                /** ================= DEBUG CONSOLE ======================= **/
+                                await resolve({
+                                    status: true,
+                                    code: 200,
+                                    msg: `Server Running Successfully`,
+                                    metadata: {
+                                        author: Options.Information.author,
+                                        version: Options.Information.version
+                                    }
+                                });
+                            }else{
+                                await rejected({
+                                    status: false,
+                                    code: 500,
+                                    msg: `Server Listenning Failed`,
+                                    error: {
+                                        errorNames: "DKA_SERVER_REACT_JS_LISTENING_ERROR",
+                                        raw : error
+                                    }
+                                });
+                                setTimeout(async () => {
+                                    await process.exit(0);
+                                }, 2000);
+                            }
+                        })
+                        /*await server.start()
                             .then(async () => {
                                 (mTempReactJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
                                     logger.info(`Server Running Successfully - port : "${mTempReactJS.port}"`) : null;
@@ -291,7 +312,7 @@ export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigRea
                                 setTimeout(async () => {
                                     await process.exit(0);
                                 }, 2000);
-                            });
+                            });*/
                     })
                     .catch(async (error) => {
                         await rejected({
