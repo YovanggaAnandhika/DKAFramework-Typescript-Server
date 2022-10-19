@@ -10,7 +10,7 @@ export async function Entry(config : ConfigReactJS) : Promise<entry> {
         if (fs.existsSync(`${config.entry}`)){
             await resolve(config.entry)
         }else {
-            let defaultEntry = path.join(__dirname, "./../Template/app.tsx");
+            let defaultEntry = path.join(__dirname, "./../Template/app.js");
             await resolve(defaultEntry);
         }
     })

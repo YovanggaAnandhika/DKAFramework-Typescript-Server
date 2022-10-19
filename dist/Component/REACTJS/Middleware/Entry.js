@@ -45,7 +45,7 @@ function Entry(config) {
                 yield resolve(config.entry);
             }
             else {
-                let defaultEntry = path_1.default.join(__dirname, "./../Template/app.tsx");
+                let defaultEntry = path_1.default.join(__dirname, "./../Template/app.js");
                 yield resolve(defaultEntry);
             }
         }));
