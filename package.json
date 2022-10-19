@@ -1,13 +1,33 @@
 {
   "name": "@dkaframework/server",
-  "description": "The Multi Framework Server Function. Part Module Of DKAFramework",
   "version": "1.0.46",
-  "main": "dist/index.js",
   "homepage": ".",
+  "description": "The Multi Framework Server Function. Part Module Of DKAFramework",
+  "keywords": [
+    "http",
+    "server",
+    "fastify",
+    "react",
+    "socket.io",
+    "socket",
+    "framework",
+    "multiple-servers",
+    "realtime",
+    "typescript"
+  ],
+  "bugs": {
+    "url": "https://github.com/YovanggaAnandhika/DKAFramework-Typescript-Server/issues",
+    "email": "dhikaprivate@gmail.com"
+  },
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": {
     "name": "Yovangga Anandhika",
     "email": "dhikaprivate@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YovanggaAnandhika/DKAFramework-Typescript-Server.git"
   },
   "license": "MIT",
   "private": false,
@@ -64,5 +84,10 @@
     "ngrok": "^4.3.3",
     "nodemon": "^2.0.19",
     "typescript-cp": "^0.1.6"
+  },
+  "engines": {
+    "node": ">=17.9.0",
+    "npm": ">=8.12.1"
   }
+
 }
