@@ -35,6 +35,7 @@
     "dev-fastify": "ts-node test/index.fastify.ts",
     "dev-client": "ts-node test/index-client.ts",
     "test:react": "ts-node test/REACT/index.ts",
+    "test:express" : "ts-node test/Express/index.ts",
     "action:clean": "tsc --build --clean",
     "action:compile": "tsc --build",
     "action:copy" : "tscp",

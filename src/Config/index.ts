@@ -4,6 +4,7 @@ import {ConfigFastify} from "../Interfaces/Config/Fastify";
 import {ConfigSocketIO} from "../Interfaces/Config/SocketIO/Server";
 import {ConfigSocketIOClient} from "../Interfaces/Config/SocketIO/Client";
 import {ConfigReactJS} from "../Interfaces/Config/ReactJS";
+import {ConfigExpressJS} from "../Interfaces/Config/Express";
 
 
 function checkModuleExist(name : string){
@@ -103,4 +104,11 @@ export const ReactJSConfigurationDefault : ConfigReactJS = {
             historyApiFallback: true
         }
     }
+}
+
+export const ExpressJSConfigurationDefault : ConfigExpressJS = {
+    state : Const.Server.State.SERVER_STATE_DEVELOPMENT,
+    engine : Const.Server.Engine.EXPRESSSJS,
+    host : Const.Server.Host.LOCALHOST,
+    port : Const.Server.Port.DEFAULT,
 }

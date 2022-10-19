@@ -1,4 +1,5 @@
 import {
+    ExpressJSConfigurationDefault,
     FastifyConfigurationDefault,
     ReactJSConfigurationDefault,
     SocketIOClientConfigurationDefault,
@@ -10,6 +11,7 @@ import {merge} from "lodash";
 import * as tcpPortUsed from "tcp-port-used";
 import {Logger} from "winston";
 import FASTIFY from "./Component/FASTIFY";
+import EXPRESS from "./Component/EXPRESS";
 import SOCKET_IO from "./Component/SOCKET.IO/Server";
 import {DKAServerCallback} from "./Interfaces/Callback";
 import Options from "./Const";
@@ -22,15 +24,17 @@ import {ConfigFastify} from "./Interfaces/Config/Fastify";
 import {ConfigSocketIO} from "./Interfaces/Config/SocketIO/Server";
 import {ConfigSocketIOClient} from "./Interfaces/Config/SocketIO/Client";
 import {ConfigReactJS} from "./Interfaces/Config/ReactJS";
+import {ConfigExpressJS} from "./Interfaces/Config/Express";
 
 /** Declare Variable **/
 let mTempFastify : ConfigFastify | never = { engine : "FASTIFY" };
 let mTempSocketIO : ConfigSocketIO = { engine : "SOCKET.IO" };
 let mTempSocketIOClient : ConfigSocketIOClient = { engine : "SOCKET.IO-CLIENT"};
 let mTempReactJS : ConfigReactJS = { engine : "REACTJS" };
+let mTempExpressJS : ConfigExpressJS = { engine : "EXPRESSJS" };
 let logger : Logger = mLogger.logger;
 
-export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigReactJS = FastifyConfigurationDefault) : Promise<DKAServerCallback> {
+export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigReactJS | ConfigExpressJS = FastifyConfigurationDefault) : Promise<DKAServerCallback> {
     return new Promise(async (resolve, rejected) => {
         switch (config.engine) {
             case Options.Server.Engine.FASTIFY :
@@ -318,6 +322,84 @@ export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigRea
                             await process.exit(0);
                         }, 2000);
                     });
+                break;
+            case Options.Server.Engine.EXPRESSSJS :
+                //## Set Configuration merger
+                mTempExpressJS = await merge(ExpressJSConfigurationDefault, config);
+                /** ================= DEBUG CONSOLE ======================= **/
+                (mTempExpressJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                    CliProgress.start(43, 0, { state : mTempExpressJS.state, status : Options.READY_STATE, descriptions : "Prepare Running Program" }) : null;
+                await CliProgress.setTotal(CliProgress.getTotal())
+                await Delay(mTempExpressJS?.Constanta?.DEFAULT_DELAY_PROGRESS);
+                /** ================= DEBUG CONSOLE ======================= **/
+                //$$$$$$$$$$$ DELETE GET CONFIG FUNCTION FOR GET CONFIG $$$$$$$$$$$$
+                delete mTempExpressJS.getConfig;
+                /** ================= DEBUG CONSOLE ======================= **/
+                (mTempExpressJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                    CliProgress.increment({ state : mTempExpressJS.state, status : Options.READY_STATE, descriptions : "Deleting Temporary Get Config Self" }) : null;
+                await CliProgress.setTotal(CliProgress.getTotal())
+                await Delay(mTempExpressJS.Constanta?.DEFAULT_DELAY_PROGRESS);
+                /** ================= DEBUG CONSOLE ======================= **/
+                await config.getConfig?.(mTempExpressJS as ConfigExpressJS);
+                /** ================= DEBUG CONSOLE ======================= **/
+                (mTempExpressJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT)?
+                    CliProgress.increment({ state : mTempExpressJS.state, status : Options.READY_STATE, descriptions : "Send Setter Configuration Callback" }) : null;
+                await CliProgress.setTotal(CliProgress.getTotal())
+                await Delay(mTempExpressJS.Constanta?.DEFAULT_DELAY_PROGRESS);
+                /** ================= DEBUG CONSOLE ======================= **/
+                //$$$$$$$$$$$ DELETE GET CONFIG FUNCTION FOR GET CONFIG $$$$$$$$$$$$
+                await EXPRESS(mTempExpressJS)
+                    .then(async (server) => {
+                        //$$$$$$$$$$$ CHECK PORT USED $$$$$$$$$$$$
+                        await tcpPortUsed.check({
+                            host: mTempExpressJS.host,
+                            port: mTempExpressJS.port as number,
+                        }).then(async (inUse) => {
+                            if (!inUse) {
+                                await server.listen(mTempExpressJS.port as number, mTempExpressJS.host as string,async () => {
+                                    (mTempExpressJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                                        logger.info(`Server Running Successfully - port : "${mTempExpressJS.port}"`) : null;
+                                    await resolve({
+                                        status: true,
+                                        code: 200,
+                                        msg: `Server Express Running Successfully`,
+                                        metadata: {
+                                            author: Options.Information.author,
+                                            version: Options.Information.version
+                                        }
+                                    });
+                                })
+                            }else{
+                                /** ================= DEBUG CONSOLE ======================= **/
+                                (mTempFastify.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                                    logger.error(`Check Port Used Started [DKA_PORT_SERVER_IN_USE]`) : null;
+
+                                /** ================= DEBUG CONSOLE ======================= **/
+                                await rejected({
+                                    status: false,
+                                    code: 500,
+                                    msg: `Server "FASTIFY" Running Failed`,
+                                    error: {errorNames: "DKA_PORT_SERVER_IN_USE"}
+                                });
+                                setTimeout(async () => {
+                                    await process.exit(0)
+                                }, 2000)
+                            }
+                        }).catch(async (error) => {
+                            await rejected({
+                                status: false,
+                                code: 500,
+                                msg: `Failed, to Check Port Server`,
+                                error: {errorNames: "DKA_PORT_SERVER_FAILED_CHECK", raw: error}
+                            });
+                            setTimeout(async () => {
+                                await process.exit(0)
+                            }, 2000)
+                        })
+                    })
+                    .catch(async (error) => {
+
+                    })
                 break;
             default :
                 await rejected({ status : false, code : 500, msg : `illegal method unknown or not available`});

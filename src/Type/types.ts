@@ -10,6 +10,7 @@ import {
     ConfigSocketIO
 } from "../Interfaces/Config/SocketIO/Server";
 import {ConfigFastify} from "../Interfaces/Config/Fastify";
+import {Router} from "express";
 
 export * from "fastify";
 
@@ -22,6 +23,7 @@ export type FastifyRegistringPlugins = (app : FastifyInstance) => Promise<Fastif
 export type FastifyInstances = (app : FastifyInstance, opts: FastifyPluginOptions, next : any) => Promise<void> | void | undefined;
 export type SocketIOInstancesClient = (io : SocketIOInstanceClient) => Promise<void> | void | undefined;
 export type SocketIOMiddleware = (io : ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next : (error ?: Error) => void) => void | Promise<void>;
+export type ExpressJSRoutesInstance = (router : Router) => void | Promise<void>;
 
 export type SecurityAuthorizationCallbackOauth = (callback : ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next : (error ?: Error) => void) => void | Promise<void>;
 export type SecurityAuthorizationCallbackBasic = (callback : ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic, next : (error ?: Error) => void) => void | Promise<void>;
@@ -72,4 +74,5 @@ export type MetaDataSocketIOClient = {
  */
 export type EngineSocketIO = "SOCKET.IO";
 export type EngineSocketIOClient = "SOCKET.IO-CLIENT";
-export type EngineReactJS = "REACTJS"
+export type EngineReactJS = "REACTJS";
+export type EngineExpressJS = "EXPRESSJS";
