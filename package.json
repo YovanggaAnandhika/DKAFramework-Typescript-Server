@@ -32,8 +32,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev-fastify": "ts-node test/index.fastify.ts",
-    "dev-client": "ts-node test/index-client.ts",
+    "test:socketio:client": "ts-node test/Socket.Io/client.ts",
+    "test:socketio:server": "ts-node test/Socket.Io/server.ts",
     "test:react": "ts-node test/REACT/index.ts",
     "test:express" : "ts-node test/Express/index.ts",
     "action:clean": "tsc --build --clean",

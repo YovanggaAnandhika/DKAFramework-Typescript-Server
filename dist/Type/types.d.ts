@@ -6,6 +6,7 @@ import { ExtendedError } from "socket.io/dist/namespace";
 import { ConfigReactJS } from "../Interfaces/Config/ReactJS";
 import { ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic, ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, ConfigSocketIO } from "../Interfaces/Config/SocketIO/Server";
 import { ConfigFastify } from "../Interfaces/Config/Fastify";
+import { Router } from "express";
 export * from "fastify";
 export declare type SocketIOInstance = Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 export declare type SocketIOInstanceSocket = Socket<DefaultEventsMap, DefaultEventsMap, any>;
@@ -16,6 +17,7 @@ export declare type FastifyRegistringPlugins = (app: FastifyInstance) => Promise
 export declare type FastifyInstances = (app: FastifyInstance, opts: FastifyPluginOptions, next: any) => Promise<void> | void | undefined;
 export declare type SocketIOInstancesClient = (io: SocketIOInstanceClient) => Promise<void> | void | undefined;
 export declare type SocketIOMiddleware = (io: ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next: (error?: Error) => void) => void | Promise<void>;
+export declare type ExpressJSRoutesInstance = (router: Router) => void | Promise<void>;
 export declare type SecurityAuthorizationCallbackOauth = (callback: ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next: (error?: Error) => void) => void | Promise<void>;
 export declare type SecurityAuthorizationCallbackBasic = (callback: ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic, next: (error?: Error) => void) => void | Promise<void>;
 export declare type SecurityAuthorizationMode = "OAUTH2" | "BASIC";
@@ -50,4 +52,5 @@ export declare type MetaDataSocketIOClient = {
 export declare type EngineSocketIO = "SOCKET.IO";
 export declare type EngineSocketIOClient = "SOCKET.IO-CLIENT";
 export declare type EngineReactJS = "REACTJS";
+export declare type EngineExpressJS = "EXPRESSJS";
 //# sourceMappingURL=types.d.ts.map

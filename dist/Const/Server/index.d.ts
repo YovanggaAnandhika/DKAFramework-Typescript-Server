@@ -1,5 +1,6 @@
-import { ConfigEngine, ConfigHost, ConfigPort, ConfigState } from "../../Interfaces/Global";
+import { ConfigEngine, ConfigEngineSocketIO, ConfigHost, ConfigPort, ConfigState } from "../../Interfaces/Global";
 export declare const State: ConfigState;
+export declare const EngineSocketIO: ConfigEngineSocketIO;
 export declare const Engine: ConfigEngine;
 export declare const Host: ConfigHost;
 export declare const Port: ConfigPort;

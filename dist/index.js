@@ -42,6 +42,7 @@ exports.Types = DKATypes;
 const lodash_1 = require("lodash");
 const tcpPortUsed = __importStar(require("tcp-port-used"));
 const FASTIFY_1 = __importDefault(require("./Component/FASTIFY"));
+const EXPRESS_1 = __importDefault(require("./Component/EXPRESS"));
 const Server_1 = __importDefault(require("./Component/SOCKET.IO/Server"));
 const Const_1 = __importDefault(require("./Const"));
 exports.Options = Const_1.default;
@@ -55,11 +56,12 @@ let mTempFastify = { engine: "FASTIFY" };
 let mTempSocketIO = { engine: "SOCKET.IO" };
 let mTempSocketIOClient = { engine: "SOCKET.IO-CLIENT" };
 let mTempReactJS = { engine: "REACTJS" };
+let mTempExpressJS = { engine: "EXPRESSJS" };
 let logger = logger_1.default.logger;
 function Server(config = Config_1.FastifyConfigurationDefault) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, rejected) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
             switch (config.engine) {
                 case Const_1.default.Server.Engine.FASTIFY:
                     //## Set Configuration merger
@@ -96,13 +98,13 @@ function Server(config = Config_1.FastifyConfigurationDefault) {
                     //$$$$$$$$$$$ CALL TYPE ENGINE FASTIFY $$$$$$$$$$$$
                     yield (0, FASTIFY_1.default)(mTempFastify)
                         .then((app) => __awaiter(this, void 0, void 0, function* () {
-                        var _p;
+                        var _t;
                         //$$$$$$$$$$$ CHECK PORT USED $$$$$$$$$$$$
                         /** ================= DEBUG CONSOLE ======================= **/
                         (mTempFastify.state === Const_1.default.Server.State.SERVER_STATE_DEVELOPMENT) ?
                             CliProgress_1.CliProgress.increment({ state: mTempFastify.state, status: Const_1.default.READY_STATE, descriptions: "Check Port Used Started" }) : null;
                         yield CliProgress_1.CliProgress.setTotal(CliProgress_1.CliProgress.getTotal());
-                        yield (0, Delay_1.Delay)((_p = mTempFastify.Constanta) === null || _p === void 0 ? void 0 : _p.DEFAULT_DELAY_PROGRESS);
+                        yield (0, Delay_1.Delay)((_t = mTempFastify.Constanta) === null || _t === void 0 ? void 0 : _t.DEFAULT_DELAY_PROGRESS);
                         /** ================= DEBUG CONSOLE ======================= **/
                         //$$$$$$$$$$$ CHECK PORT USED $$$$$$$$$$$$
                         yield tcpPortUsed.check({
@@ -115,7 +117,7 @@ function Server(config = Config_1.FastifyConfigurationDefault) {
                                     host: mTempFastify.host,
                                     port: mTempFastify.port,
                                 }, (error) => __awaiter(this, void 0, void 0, function* () {
-                                    var _q;
+                                    var _u;
                                     if (!error) {
                                         /** ================= DEBUG CONSOLE ======================= **/
                                         if (mTempFastify.state === Const_1.default.Server.State.SERVER_STATE_DEVELOPMENT) {
@@ -138,7 +140,7 @@ function Server(config = Config_1.FastifyConfigurationDefault) {
                                         /** ================= DEBUG CONSOLE ======================= **/
                                         (mTempFastify.state === Const_1.default.Server.State.SERVER_STATE_DEVELOPMENT) ?
                                             CliProgress_1.CliProgress.increment({ state: mTempFastify.state, status: Const_1.default.ERROR_STATE, descriptions: `Check Port Used Started [DKA_SERVER_LISTEN_FAILED] ${error}` }) : null;
-                                        yield (0, Delay_1.Delay)((_q = mTempFastify.Constanta) === null || _q === void 0 ? void 0 : _q.DEFAULT_DELAY_PROGRESS);
+                                        yield (0, Delay_1.Delay)((_u = mTempFastify.Constanta) === null || _u === void 0 ? void 0 : _u.DEFAULT_DELAY_PROGRESS);
                                         /** ================= DEBUG CONSOLE ======================= **/
                                         yield rejected({
                                             status: false,
@@ -186,7 +188,7 @@ function Server(config = Config_1.FastifyConfigurationDefault) {
                     }));
                     //$$$$$$$$$$$ END CALL TYPE ENGINE FASTIFY $$$$$$$$$$$$
                     break;
-                case Const_1.default.Server.Engine.SOCKETIO:
+                case Const_1.default.Server.Engine.SOCKETIO.Server:
                     //## Set Configuration merger
                     mTempSocketIO = yield (0, lodash_1.merge)(Config_1.SocketIOConfigurationDefault, config);
                     /** ================= DEBUG CONSOLE ======================= **/
@@ -346,6 +348,83 @@ function Server(config = Config_1.FastifyConfigurationDefault) {
                         }), 2000);
                     }));
                     break;
+                case Const_1.default.Server.Engine.EXPRESSSJS:
+                    //## Set Configuration merger
+                    mTempExpressJS = yield (0, lodash_1.merge)(Config_1.ExpressJSConfigurationDefault, config);
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    (mTempExpressJS.state === Const_1.default.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                        CliProgress_1.CliProgress.start(43, 0, { state: mTempExpressJS.state, status: Const_1.default.READY_STATE, descriptions: "Prepare Running Program" }) : null;
+                    yield CliProgress_1.CliProgress.setTotal(CliProgress_1.CliProgress.getTotal());
+                    yield (0, Delay_1.Delay)((_p = mTempExpressJS === null || mTempExpressJS === void 0 ? void 0 : mTempExpressJS.Constanta) === null || _p === void 0 ? void 0 : _p.DEFAULT_DELAY_PROGRESS);
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    //$$$$$$$$$$$ DELETE GET CONFIG FUNCTION FOR GET CONFIG $$$$$$$$$$$$
+                    delete mTempExpressJS.getConfig;
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    (mTempExpressJS.state === Const_1.default.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                        CliProgress_1.CliProgress.increment({ state: mTempExpressJS.state, status: Const_1.default.READY_STATE, descriptions: "Deleting Temporary Get Config Self" }) : null;
+                    yield CliProgress_1.CliProgress.setTotal(CliProgress_1.CliProgress.getTotal());
+                    yield (0, Delay_1.Delay)((_q = mTempExpressJS.Constanta) === null || _q === void 0 ? void 0 : _q.DEFAULT_DELAY_PROGRESS);
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    yield ((_r = config.getConfig) === null || _r === void 0 ? void 0 : _r.call(config, mTempExpressJS));
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    (mTempExpressJS.state === Const_1.default.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                        CliProgress_1.CliProgress.increment({ state: mTempExpressJS.state, status: Const_1.default.READY_STATE, descriptions: "Send Setter Configuration Callback" }) : null;
+                    yield CliProgress_1.CliProgress.setTotal(CliProgress_1.CliProgress.getTotal());
+                    yield (0, Delay_1.Delay)((_s = mTempExpressJS.Constanta) === null || _s === void 0 ? void 0 : _s.DEFAULT_DELAY_PROGRESS);
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    //$$$$$$$$$$$ DELETE GET CONFIG FUNCTION FOR GET CONFIG $$$$$$$$$$$$
+                    yield (0, EXPRESS_1.default)(mTempExpressJS)
+                        .then((server) => __awaiter(this, void 0, void 0, function* () {
+                        //$$$$$$$$$$$ CHECK PORT USED $$$$$$$$$$$$
+                        yield tcpPortUsed.check({
+                            host: mTempExpressJS.host,
+                            port: mTempExpressJS.port,
+                        }).then((inUse) => __awaiter(this, void 0, void 0, function* () {
+                            if (!inUse) {
+                                yield server.listen(mTempExpressJS.port, mTempExpressJS.host, () => __awaiter(this, void 0, void 0, function* () {
+                                    (mTempExpressJS.state === Const_1.default.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                                        logger.info(`Server Running Successfully - port : "${mTempExpressJS.port}"`) : null;
+                                    yield resolve({
+                                        status: true,
+                                        code: 200,
+                                        msg: `Server Express Running Successfully`,
+                                        metadata: {
+                                            author: Const_1.default.Information.author,
+                                            version: Const_1.default.Information.version
+                                        }
+                                    });
+                                }));
+                            }
+                            else {
+                                /** ================= DEBUG CONSOLE ======================= **/
+                                (mTempFastify.state === Const_1.default.Server.State.SERVER_STATE_DEVELOPMENT) ?
+                                    logger.error(`Check Port Used Started [DKA_PORT_SERVER_IN_USE]`) : null;
+                                /** ================= DEBUG CONSOLE ======================= **/
+                                yield rejected({
+                                    status: false,
+                                    code: 500,
+                                    msg: `Server "FASTIFY" Running Failed`,
+                                    error: { errorNames: "DKA_PORT_SERVER_IN_USE" }
+                                });
+                                setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                                    yield process.exit(0);
+                                }), 2000);
+                            }
+                        })).catch((error) => __awaiter(this, void 0, void 0, function* () {
+                            yield rejected({
+                                status: false,
+                                code: 500,
+                                msg: `Failed, to Check Port Server`,
+                                error: { errorNames: "DKA_PORT_SERVER_FAILED_CHECK", raw: error }
+                            });
+                            setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                                yield process.exit(0);
+                            }), 2000);
+                        }));
+                    }))
+                        .catch((error) => __awaiter(this, void 0, void 0, function* () {
+                    }));
+                    break;
                 default:
                     yield rejected({ status: false, code: 500, msg: `illegal method unknown or not available` });
                     //await process.exit(0)
@@ -360,7 +439,7 @@ function Client(config = Config_1.SocketIOClientConfigurationDefault) {
         return new Promise((resolve, rejected) => __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c, _d, _e;
             switch (config.engine) {
-                case Const_1.default.Server.Engine.SOCKETIOCLIENT:
+                case Const_1.default.Server.Engine.SOCKETIO.Client:
                     //## Set Configuration merger
                     mTempSocketIOClient = yield (0, lodash_1.merge)(Config_1.SocketIOClientConfigurationDefault, config);
                     /** ================= DEBUG CONSOLE ======================= **/

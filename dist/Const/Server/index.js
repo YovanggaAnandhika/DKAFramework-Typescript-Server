@@ -1,16 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Port = exports.Host = exports.Engine = exports.State = void 0;
+exports.Port = exports.Host = exports.Engine = exports.EngineSocketIO = exports.State = void 0;
 exports.State = {
     SERVER_STATE_DEVELOPMENT: "development",
     SERVER_STATE_PRODUCTION: "production"
+};
+exports.EngineSocketIO = {
+    Server: "SOCKET.IO",
+    Client: "SOCKET.IO-CLIENT"
 };
 exports.Engine = {
     FASTIFY: "FASTIFY",
     HTTP: "HTTP",
     UDP: "UDP",
-    SOCKETIO: "SOCKET.IO",
-    SOCKETIOCLIENT: "SOCKET.IO-CLIENT",
+    SOCKETIO: exports.EngineSocketIO,
     REACTJS: "REACTJS",
     EXPRESSSJS: "EXPRESSJS"
 };

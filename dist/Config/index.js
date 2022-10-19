@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ReactJSConfigurationDefault = exports.SocketIOClientConfigurationDefault = exports.SocketIOConfigurationDefault = exports.FastifyConfigurationDefault = void 0;
+exports.ExpressJSConfigurationDefault = exports.ReactJSConfigurationDefault = exports.SocketIOClientConfigurationDefault = exports.SocketIOConfigurationDefault = exports.FastifyConfigurationDefault = void 0;
 const Const_1 = __importDefault(require("../Const"));
 const path_1 = __importDefault(require("path"));
 function checkModuleExist(name) {
@@ -61,7 +61,7 @@ exports.FastifyConfigurationDefault = {
 };
 exports.SocketIOConfigurationDefault = {
     state: Const_1.default.Server.State.SERVER_STATE_DEVELOPMENT,
-    engine: Const_1.default.Server.Engine.SOCKETIO,
+    engine: Const_1.default.Server.Engine.SOCKETIO.Server,
     options: {
         socket: {
             costumMiddleware: undefined
@@ -71,7 +71,7 @@ exports.SocketIOConfigurationDefault = {
 };
 exports.SocketIOClientConfigurationDefault = {
     state: Const_1.default.Server.State.SERVER_STATE_DEVELOPMENT,
-    engine: Const_1.default.Server.Engine.SOCKETIOCLIENT,
+    engine: Const_1.default.Server.Engine.SOCKETIO.Client,
     host: "127.0.0.1",
     port: 80,
     settings: {
@@ -111,4 +111,10 @@ exports.ReactJSConfigurationDefault = {
             historyApiFallback: true
         }
     }
+};
+exports.ExpressJSConfigurationDefault = {
+    state: Const_1.default.Server.State.SERVER_STATE_DEVELOPMENT,
+    engine: Const_1.default.Server.Engine.EXPRESSSJS,
+    host: Const_1.default.Server.Host.LOCALHOST,
+    port: Const_1.default.Server.Port.DEFAULT,
 };

@@ -53,7 +53,7 @@ export const FastifyConfigurationDefault : ConfigFastify = {
 }
 export const SocketIOConfigurationDefault : ConfigSocketIO = {
     state : Const.Server.State.SERVER_STATE_DEVELOPMENT,
-    engine : Const.Server.Engine.SOCKETIO,
+    engine : Const.Server.Engine.SOCKETIO.Server,
     options : {
         socket : {
             costumMiddleware : undefined
@@ -63,7 +63,7 @@ export const SocketIOConfigurationDefault : ConfigSocketIO = {
 }
 export const SocketIOClientConfigurationDefault : ConfigSocketIOClient = {
     state : Const.Server.State.SERVER_STATE_DEVELOPMENT,
-    engine : Const.Server.Engine.SOCKETIOCLIENT,
+    engine : Const.Server.Engine.SOCKETIO.Client,
     host : "127.0.0.1",
     port : 80,
     settings : {

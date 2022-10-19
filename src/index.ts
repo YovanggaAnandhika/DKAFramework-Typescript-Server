@@ -161,7 +161,7 @@ export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigRea
                     });
                 //$$$$$$$$$$$ END CALL TYPE ENGINE FASTIFY $$$$$$$$$$$$
                 break;
-            case Options.Server.Engine.SOCKETIO :
+            case Options.Server.Engine.SOCKETIO.Server :
                 //## Set Configuration merger
                 mTempSocketIO = await merge(SocketIOConfigurationDefault, config);
                 /** ================= DEBUG CONSOLE ======================= **/
@@ -412,7 +412,7 @@ export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigRea
 export async function Client(config : ConfigSocketIOClient = SocketIOClientConfigurationDefault) : Promise<DKAServerCallback> {
     return new Promise(async (resolve, rejected) => {
         switch (config.engine) {
-            case Options.Server.Engine.SOCKETIOCLIENT :
+            case Options.Server.Engine.SOCKETIO.Client :
                 //## Set Configuration merger
                 mTempSocketIOClient = await merge(SocketIOClientConfigurationDefault, config);
                 /** ================= DEBUG CONSOLE ======================= **/
