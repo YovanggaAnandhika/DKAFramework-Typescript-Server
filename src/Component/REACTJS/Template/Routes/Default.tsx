@@ -19,7 +19,7 @@ class Default extends React.Component {
     componentDidMount() {
 
         require("./../../Assets/main.sass");
-        require("./../../Assets/js/main.min");
+        require("./../../Assets/js/main.js");
     }
 
     render() {
