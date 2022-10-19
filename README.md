@@ -4,11 +4,11 @@
 
 ## Status
 
-![GitHub last commit](https://img.shields.io/github/last-commit/YovanggaAnandhika/MariaDB)
-![GitHub contributors](https://img.shields.io/github/contributors/YovanggaAnandhika/MariaDB)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/YovanggaAnandhika/MariaDB)
-![GitHub issues](https://img.shields.io/github/issues/YovanggaAnandhika/MariaDB)
-![GitHub repo size](https://img.shields.io/github/repo-size/YovanggaAnandhika/MariaDB)
+![GitHub last commit](https://img.shields.io/github/last-commit/YovanggaAnandhika/DKAFramework-Typescript-Server)
+![GitHub contributors](https://img.shields.io/github/contributors/YovanggaAnandhika/DKAFramework-Typescript-Server)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/YovanggaAnandhika/DKAFramework-Typescript-Server)
+![GitHub issues](https://img.shields.io/github/issues/YovanggaAnandhika/DKAFramework-Typescript-Server)
+![GitHub repo size](https://img.shields.io/github/repo-size/YovanggaAnandhika/DKAFramework-Typescript-Server)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 
 
@@ -72,7 +72,7 @@ XML                      4 mins              ░░░░░░░░░░░�
 
 ---
 
-## Installing DKA MariaDB Module
+## Installing DKA DKAFramework-Typescript-Server Module
 
 Simple Installation
 
