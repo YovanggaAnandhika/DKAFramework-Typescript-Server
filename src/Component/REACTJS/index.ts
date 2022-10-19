@@ -36,6 +36,15 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
                                     infrastructureLogging: {
                                         level: "error"
                                     },
+                                    performance : {
+                                        hints: false
+                                    },
+                                    optimization: {
+                                        splitChunks: {
+                                            minSize: 10000,
+                                            maxSize: 250000,
+                                        }
+                                    },
                                     stats: "errors-only",
                                     output: {
                                         publicPath: "/",

@@ -80,7 +80,7 @@ export interface ConfigReactJS {
     state? : State,
     host ?: string | undefined,
     port ?: number | undefined,
-    engine : EngineReactJS,
+    engine ?: EngineReactJS | undefined,
     entry ?:
         | string
         | (() => string | WebpackEntryObject | string[] | Promise<string | WebpackEntryObject | string[]>)

@@ -7,7 +7,6 @@
     "lib": ["es2017", "es7", "es5", "es6", "dom"],
     // Tells TypeScript to read JS files, as
     // Generate d.ts files
-    "removeComments": false,
     "declaration": true,
     "jsx": "react",
     "rootDir": "src",

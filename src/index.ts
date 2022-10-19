@@ -29,30 +29,10 @@ let mTempSocketIO : ConfigSocketIO = { engine : "SOCKET.IO" };
 let mTempSocketIOClient : ConfigSocketIOClient = { engine : "SOCKET.IO-CLIENT"};
 let mTempReactJS : ConfigReactJS = { engine : "REACTJS" };
 let logger : Logger = mLogger.logger;
-function checkModuleExist(name : string){
-    try {
-        require.resolve(name);
-        return true;
-    }catch (e) {
-        return false;
-    }
-}
-/**
- * @function Server
- * @typedef { Config }
- * @return Promise<ServerCallback>
- *
- */
 
 export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigReactJS = FastifyConfigurationDefault) : Promise<DKAServerCallback> {
     return new Promise(async (resolve, rejected) => {
         switch (config.engine) {
-            case "FASTIFY":
-                break;
-            case "SOCKET.IO":
-                break;
-            case "REACTJS":
-                break;
             case Options.Server.Engine.FASTIFY :
                 //## Set Configuration merger
                 mTempFastify = await merge(FastifyConfigurationDefault, config);
@@ -410,6 +390,10 @@ export async function Client(config : ConfigSocketIOClient = SocketIOClientConfi
                             await process.exit(0);
                         }, 2000);
                     })
+                break;
+            default :
+                await rejected({ status : false, code : 500, msg : `illegal method unknown or not available`});
+                //await process.exit(0)
                 break;
         }
     })

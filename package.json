@@ -1,7 +1,7 @@
 {
   "name": "@dkaframework/server",
   "description": "The Multi Framework Server Function. Part Module Of DKAFramework",
-  "version": "1.0.39",
+  "version": "1.0.46",
   "main": "dist/index.js",
   "homepage": ".",
   "types": "dist/index.d.ts",
@@ -15,7 +15,10 @@
     "dev-fastify": "ts-node test/index.fastify.ts",
     "dev-client": "ts-node test/index-client.ts",
     "test:react": "ts-node test/REACT/index.ts",
-    "build": "tsc --build && tscp"
+    "action:clean": "tsc --build --clean",
+    "action:compile": "tsc --build",
+    "action:copy" : "tscp",
+    "build": "yarn run action:clean && yarn run action:compile && yarn run action:copy"
   },
   "dependencies": {
     "@babel/core": "^7.19.3",

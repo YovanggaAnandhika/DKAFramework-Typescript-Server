@@ -13,7 +13,7 @@ export interface ConfigSocketIOClient {
      * The State Development or Production
      * **/
     state? : State,
-    engine : EngineSocketIOClient,
+    engine ?: EngineSocketIOClient | undefined,
     host ?: string | undefined,
     port ?: number | undefined,
     io ?: SocketIOInstancesClient | undefined,

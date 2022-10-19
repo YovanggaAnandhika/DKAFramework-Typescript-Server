@@ -91,7 +91,7 @@ export interface ConfigSocketIO {
      * The State Development or Production
      * **/
     state? : State,
-    engine : EngineSocketIO,
+    engine ?: EngineSocketIO | undefined,
     port? : number | Server,
     io? : SocketIOInstances,
     onConnection ?: (io : SocketIOInstanceSocket) => Promise<void> | void | undefined,

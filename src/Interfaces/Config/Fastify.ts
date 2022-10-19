@@ -51,7 +51,7 @@ export interface ConfigFastify {
      * The State Development or Production
      * **/
     state ?: State,
-    engine : EngineFastify,
+    engine ?: EngineFastify | undefined,
     host ?: string | undefined,
     port ?: number | string | undefined,
     app ?: FastifyInstances,
