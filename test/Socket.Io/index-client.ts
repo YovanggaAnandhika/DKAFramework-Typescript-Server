@@ -1,4 +1,4 @@
-import {Options, Client} from "./../src";
+import {Client, Options} from "./../../src";
 
 (async () => {
     await Client({

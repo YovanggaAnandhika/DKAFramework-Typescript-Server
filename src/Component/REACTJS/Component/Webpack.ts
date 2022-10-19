@@ -1,5 +1,5 @@
 import webpack, {Compiler} from "webpack"
-import {ConfigReactJSOptionsWebpackConfiguration} from "../../../Interfaces/Config";
+import {ConfigReactJSOptionsWebpackConfiguration} from "../../../Interfaces/Config/ReactJS";
 
 
 export async function Webpack(config : ConfigReactJSOptionsWebpackConfiguration) : Promise<Compiler> {

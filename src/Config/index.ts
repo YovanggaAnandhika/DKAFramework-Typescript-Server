@@ -1,7 +1,9 @@
-import * as Config from "./../Interfaces/Config";
 import Const from "../Const";
 import path from "path";
-import {ConfigFastify, ConfigReactJS, ConfigSocketIO, ConfigSocketIOClient} from "../Interfaces/Config";
+import {ConfigFastify} from "../Interfaces/Config/Fastify";
+import {ConfigSocketIO} from "../Interfaces/Config/SocketIO/Server";
+import {ConfigSocketIOClient} from "../Interfaces/Config/SocketIO/Client";
+import {ConfigReactJS} from "../Interfaces/Config/ReactJS";
 
 
 function checkModuleExist(name : string){
@@ -11,10 +13,6 @@ function checkModuleExist(name : string){
     }catch (e) {
         return false;
     }
-}
-
-export const ServerSettingsFastify : Config.ConfigServerFastifySettings  = {
-    logger : false
 }
 
 /**
@@ -29,7 +27,9 @@ export const FastifyConfigurationDefault : ConfigFastify = {
 
         next();
     },
-    settings : ServerSettingsFastify,
+    settings : {
+        logger : false
+    },
     plugins : {
         pointOfView : {
             enabled : false,

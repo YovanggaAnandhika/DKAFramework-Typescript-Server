@@ -1,8 +1,11 @@
-import Options from "../../../../Const";
-import {ConfigServerSocketIOOptionsSecurityAuthorizationOauth, ConfigSocketIO} from "../../../../Interfaces/Config";
-import mLogger from "../../../../Function/Helper/logger";
+import Options from "../../../../../Const";
+import mLogger from "../../../../../Function/Helper/logger";
 import {isEmpty} from "lodash";
 import * as Http from "http";
+import {
+    ConfigServerSocketIOOptionsSecurityAuthorizationOauth,
+    ConfigSocketIO
+} from "../../../../../Interfaces/Config/SocketIO/Server";
 
 let logger = mLogger.logger;
 

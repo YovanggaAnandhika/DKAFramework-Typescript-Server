@@ -1,11 +1,11 @@
 import webpackDev from "webpack-dev-server";
-import {ConfigReactJS, ConfigReactJSOptionsWebpackConfiguration,} from "../../Interfaces/Config";
 import {merge} from "lodash";
 import {Plugins} from "./Middleware/Plugins";
 import {Rules} from "./Middleware/Rules";
 import {Entry} from "./Middleware/Entry";
 import {Webpack} from "./Component/Webpack";
 import {WebpackDev} from "./Component/WebpackDev";
+import {ConfigReactJS, ConfigReactJSOptionsWebpackConfiguration} from "../../Interfaces/Config/ReactJS";
 
 export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
 

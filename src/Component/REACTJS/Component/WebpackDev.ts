@@ -1,7 +1,7 @@
 import webpackDev, {Configuration as WebpackDevConfig} from "webpack-dev-server";
 import {Compiler as WebpackCompiler} from "webpack";
-import {ConfigReactJS} from "../../../Interfaces/Config";
 import {merge} from "lodash";
+import {ConfigReactJS} from "../../../Interfaces/Config/ReactJS";
 
 
 export async function WebpackDev(config : ConfigReactJS, WebpackCompiler : WebpackCompiler) : Promise<webpackDev>{
@@ -9,7 +9,7 @@ export async function WebpackDev(config : ConfigReactJS, WebpackCompiler : Webpa
         let mWebpackCompilerOptions : WebpackDevConfig= {
             host : config.host,
             port : config.port,
-            historyApiFallback : config.options.WebpackDev.historyApiFallback
+            historyApiFallback : config.options?.WebpackDev?.historyApiFallback
         }
         /*** Mergering Options Compiler Options WebPack Dev Server */
         let mWebpackDevDefaultCompilerOptions : WebpackDevConfig = merge(mWebpackCompilerOptions, config.options?.WebpackDev)

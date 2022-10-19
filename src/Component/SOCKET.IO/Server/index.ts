@@ -1,8 +1,8 @@
-import {ConfigSocketIO} from "../../Interfaces/Config";
+import {ConfigSocketIO} from "../../../Interfaces/Config/SocketIO/Server";
 import {Server, Socket} from "socket.io";
 import {createServer, Server as mServerHTTP} from "http";
 import {createServer as createSecureServer, Server as mServerHTTPS} from "https";
-import {SocketIOInstances} from "../../Type/types";
+import {SocketIOInstances} from "../../../Type/types";
 import Middleware from "./Middleware";
 // @ts-ignore
 import {setupMaster, setupWorker} from "@socket.io/sticky";

@@ -1,5 +1,5 @@
-import {ConfigReactJS} from "../../../Interfaces/Config";
 import {RuleSetRule} from "webpack";
+import {ConfigReactJS} from "../../../Interfaces/Config/ReactJS";
 
 
 export async function Rules(config : ConfigReactJS) : Promise<(RuleSetRule | "...")[]> {

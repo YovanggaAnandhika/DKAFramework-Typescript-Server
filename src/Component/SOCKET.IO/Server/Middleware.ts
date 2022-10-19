@@ -1,9 +1,9 @@
-import {SocketIOInstancesMiddleware} from "../../Type/types";
-import {ConfigSocketIO} from "../../Interfaces/Config";
-import Options from "../../Const";
-import mLogger from "../../Function/Helper/logger";
+import {SocketIOInstancesMiddleware} from "../../../Type/types";
+import Options from "../../../Const";
+import mLogger from "../../../Function/Helper/logger";
 import Oauth2 from "./Component/Oauth2";
 import Basic from "./Component/Basic";
+import {ConfigSocketIO} from "../../../Interfaces/Config/SocketIO/Server";
 
 let logger = mLogger.logger;
 

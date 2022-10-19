@@ -1,5 +1,4 @@
-import {ConfigFastify} from "../../Interfaces/Config";
-import { FastifyInstances } from "../../Type/types";
+import {FastifyInstances} from "../../Type/types";
 import Fastify, {FastifyInstance} from "fastify";
 import Options from "../../Const";
 import {Logger} from "winston";
@@ -7,6 +6,7 @@ import mLogger from "../../Function/Helper/logger";
 import {Plugins} from "./Plugins";
 import {CliProgress} from "../../Function/Helper/CliProgress";
 import Delay from "../../Function/Helper/Delay";
+import {ConfigFastify} from "../../Interfaces/Config/Fastify";
 
 let logger : Logger = mLogger.logger;
 

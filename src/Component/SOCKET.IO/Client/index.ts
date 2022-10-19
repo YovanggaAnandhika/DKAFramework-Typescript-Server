@@ -1,7 +1,7 @@
-import {ConfigSocketIOClient} from "../../Interfaces/Config";
+import {ConfigSocketIOClient} from "../../../Interfaces/Config/SocketIO/Client";
 import * as Sock from "socket.io-client"
 import moment from "moment-timezone";
-import {MetaDataSocketIOClient} from "../../Type/types";
+import {MetaDataSocketIOClient} from "../../../Type/types";
 import {merge} from "lodash";
 
 

@@ -3,13 +3,13 @@ import {Server, Socket} from "socket.io";
 import * as Sock from "socket.io-client";
 import {DefaultEventsMap} from "socket.io/dist/typed-events";
 import {ExtendedError} from "socket.io/dist/namespace";
+import {ConfigReactJS} from "../Interfaces/Config/ReactJS";
 import {
-    ConfigFastify,
-    ConfigReactJS,
     ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic,
     ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth,
     ConfigSocketIO
-} from "../Interfaces/Config";
+} from "../Interfaces/Config/SocketIO/Server";
+import {ConfigFastify} from "../Interfaces/Config/Fastify";
 
 export * from "fastify";
 

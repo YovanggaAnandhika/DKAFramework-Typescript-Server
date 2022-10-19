@@ -1,4 +1,4 @@
-import {ConfigState, ConfigEngine, ConfigHost, ConfigPort} from "../../Interfaces/Config";
+import {ConfigEngine, ConfigHost, ConfigPort, ConfigState} from "../../Interfaces/Global";
 
 export const State : ConfigState = {
     SERVER_STATE_DEVELOPMENT : "development",

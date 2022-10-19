@@ -1,6 +1,6 @@
-import {ConfigReactJS} from "../../../Interfaces/Config";
 import {EntryObject as WebpackEntryObject} from "webpack";
 import * as fs from "fs";
+import {ConfigReactJS} from "../../../Interfaces/Config/ReactJS";
 
 type entry = undefined | string | (() => string | WebpackEntryObject | string[] | Promise<string | WebpackEntryObject | string[]>) | WebpackEntryObject | string[];
 

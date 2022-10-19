@@ -4,20 +4,24 @@ import {
     SocketIOClientConfigurationDefault,
     SocketIOConfigurationDefault
 } from "./Config";
+
 import * as DKATypes from "./Type/types";
 import {merge} from "lodash";
 import * as tcpPortUsed from "tcp-port-used";
 import {Logger} from "winston";
 import FASTIFY from "./Component/FASTIFY";
-import SOCKET_IO from "./Component/SocketIO";
+import SOCKET_IO from "./Component/SOCKET.IO/Server";
 import {DKAServerCallback} from "./Interfaces/Callback";
 import Options from "./Const";
 import mLogger from "./Function/Helper/logger";
 import {Delay} from "./Function/Helper/Delay";
 import {CliProgress} from "./Function/Helper/CliProgress";
-import {ConfigFastify, ConfigReactJS, ConfigSocketIO, ConfigSocketIOClient} from "./Interfaces/Config";
 import REACTJS from "./Component/REACTJS";
-import SOCKET_IO_CLIENT from "./Component/SocketIOClient";
+import SOCKET_IO_CLIENT from "./Component/SOCKET.IO/Client";
+import {ConfigFastify} from "./Interfaces/Config/Fastify";
+import {ConfigSocketIO} from "./Interfaces/Config/SocketIO/Server";
+import {ConfigSocketIOClient} from "./Interfaces/Config/SocketIO/Client";
+import {ConfigReactJS} from "./Interfaces/Config/ReactJS";
 
 /** Declare Variable **/
 let mTempFastify : ConfigFastify | never = { engine : "FASTIFY" };
@@ -43,6 +47,12 @@ function checkModuleExist(name : string){
 export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigReactJS = FastifyConfigurationDefault) : Promise<DKAServerCallback> {
     return new Promise(async (resolve, rejected) => {
         switch (config.engine) {
+            case "FASTIFY":
+                break;
+            case "SOCKET.IO":
+                break;
+            case "REACTJS":
+                break;
             case Options.Server.Engine.FASTIFY :
                 //## Set Configuration merger
                 mTempFastify = await merge(FastifyConfigurationDefault, config);

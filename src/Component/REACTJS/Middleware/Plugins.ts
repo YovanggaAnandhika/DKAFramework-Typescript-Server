@@ -1,8 +1,8 @@
 import Webpack, {Compiler as WebpackCompiler} from "webpack";
 import {merge} from "lodash";
-import {ConfigReactJS} from "../../../Interfaces/Config";
 import HtmlWebpackPlugin, {Options} from "html-webpack-plugin";
 import path from "path";
+import {ConfigReactJS} from "../../../Interfaces/Config/ReactJS";
 
 
 type PluginsWebpackTypes = (
@@ -14,7 +14,7 @@ export async function Plugins(config : ConfigReactJS) : Promise<PluginsWebpackTy
     return new Promise(async (resolve, rejected) => {
         let pluginsModules : PluginsWebpackTypes = [];
 
-        if (config.plugins?.HtmlWebpackPlugin.enabled){
+        if (config.plugins?.HtmlWebpackPlugin?.enabled){
             let defaultOptionsHTMLWebpackPlugin : Options = {
                 template : path.join(__dirname,"./../Template/index.html"),
 
