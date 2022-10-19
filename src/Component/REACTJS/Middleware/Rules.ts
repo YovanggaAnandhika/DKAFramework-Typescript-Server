@@ -4,8 +4,33 @@ import {ConfigReactJS} from "../../../Interfaces/Config/ReactJS";
 
 export async function Rules(config : ConfigReactJS) : Promise<(RuleSetRule | "...")[]> {
     return new Promise(async (resolve, rejected) => {
-        let WebpackRules : (RuleSetRule | "...")[] = [];
+        let WebpackRules: (RuleSetRule | "...")[] = [];
 
+        WebpackRules.push({
+            test: /\.s[ac]ss$/i,
+            use: [
+                // Creates `style` nodes from JS strings
+                "style-loader",
+                // Translates CSS into CommonJS
+                "css-loader",
+                // Compiles Sass to CSS
+                "sass-loader",
+            ],
+        });
+
+        WebpackRules.push({
+            test: /\.css$/i,
+            use: ["style-loader", "css-loader"],
+        });
+
+        WebpackRules.push({
+            test: /\.(png|jpe?g|gif|svg)$/i,
+            use: [
+                {
+                    loader: 'file-loader',
+                },
+            ],
+        })
         WebpackRules.push({
             test: /\.(ts|js)x?$/,
             exclude: /node_modules/,

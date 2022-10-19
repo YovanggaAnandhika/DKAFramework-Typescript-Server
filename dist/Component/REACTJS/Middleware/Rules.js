@@ -15,6 +15,29 @@ function Rules(config) {
         return new Promise((resolve, rejected) => __awaiter(this, void 0, void 0, function* () {
             let WebpackRules = [];
             WebpackRules.push({
+                test: /\.s[ac]ss$/i,
+                use: [
+                    // Creates `style` nodes from JS strings
+                    "style-loader",
+                    // Translates CSS into CommonJS
+                    "css-loader",
+                    // Compiles Sass to CSS
+                    "sass-loader",
+                ],
+            });
+            WebpackRules.push({
+                test: /\.css$/i,
+                use: ["style-loader", "css-loader"],
+            });
+            WebpackRules.push({
+                test: /\.(png|jpe?g|gif|svg)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                    },
+                ],
+            });
+            WebpackRules.push({
                 test: /\.(ts|js)x?$/,
                 exclude: /node_modules/,
                 use: {

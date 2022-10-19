@@ -31,17 +31,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Entry = void 0;
 const fs = __importStar(require("fs"));
+const path_1 = __importDefault(require("path"));
 function Entry(config) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, rejected) => __awaiter(this, void 0, void 0, function* () {
             if (fs.existsSync(`${config.entry}`)) {
-                resolve(config.entry);
+                yield resolve(config.entry);
             }
             else {
-                rejected({ status: false, code: 500, msg: `entry not found. please located the files` });
+                let defaultEntry = path_1.default.join(__dirname, "./../Template/app.tsx");
+                yield resolve(defaultEntry);
             }
         }));
     });
