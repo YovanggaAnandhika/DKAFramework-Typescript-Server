@@ -1,0 +1,1 @@
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../src/Component/SOCKET.IO/Server/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,cAAc,EAAC,MAAM,4CAA4C,CAAC;AAE1E,OAAO,EAAe,MAAM,IAAI,WAAW,EAAC,MAAM,MAAM,CAAC;AACzD,OAAO,EAAqC,MAAM,IAAI,YAAY,EAAC,MAAM,OAAO,CAAC;AAoBjF,QAAA,MAAM,SAAS,WAAmB,cAAc,KAAI,QAAQ,WAAW,GAAG,YAAY,CA4ErF,CAAC;AAEF,eAAe,SAAS,CAAC"}
