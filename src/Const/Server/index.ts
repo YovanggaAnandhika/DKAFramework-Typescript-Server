@@ -1,16 +1,20 @@
-import {ConfigEngine, ConfigHost, ConfigPort, ConfigState} from "../../Interfaces/Global";
+import {ConfigEngine, ConfigEngineSocketIO, ConfigHost, ConfigPort, ConfigState} from "../../Interfaces/Global";
 
 export const State : ConfigState = {
     SERVER_STATE_DEVELOPMENT : "development",
     SERVER_STATE_PRODUCTION : "production"
 }
 
+export const EngineSocketIO : ConfigEngineSocketIO = {
+    Server : "SOCKET.IO",
+    Client : "SOCKET.IO-CLIENT"
+};
+
 export const Engine : ConfigEngine = {
     FASTIFY : "FASTIFY",
     HTTP : "HTTP",
     UDP : "UDP",
-    SOCKETIO : "SOCKET.IO",
-    SOCKETIOCLIENT : "SOCKET.IO-CLIENT",
+    SOCKETIO : EngineSocketIO,
     REACTJS : "REACTJS",
     EXPRESSSJS : "EXPRESSJS"
 }

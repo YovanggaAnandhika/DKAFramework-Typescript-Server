@@ -7,11 +7,14 @@ export interface ConfigState {
     SERVER_STATE_PRODUCTION : "production"
 }
 
+export interface ConfigEngineSocketIO {
+    Server : EngineSocketIO,
+    Client : EngineSocketIOClient,
+}
 export interface ConfigEngine {
     FASTIFY : EngineFastify,
     EXPRESSSJS : "EXPRESSJS",
-    SOCKETIO : EngineSocketIO,
-    SOCKETIOCLIENT : EngineSocketIOClient,
+    SOCKETIO : ConfigEngineSocketIO,
     REACTJS : EngineReactJS,
     HTTP : "HTTP",
     UDP : "UDP"

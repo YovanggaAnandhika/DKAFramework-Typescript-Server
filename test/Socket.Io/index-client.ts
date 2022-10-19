@@ -3,7 +3,7 @@ import {Client, Options} from "./../../src";
 (async () => {
     await Client({
         state : Options.Server.State.SERVER_STATE_DEVELOPMENT,
-        engine : Options.Server.Engine.SOCKETIOCLIENT,
+        engine : Options.Server.Engine.SOCKETIO.Client,
         host : "127.0.0.1",
         port : 213,
         io : async (io) => {
