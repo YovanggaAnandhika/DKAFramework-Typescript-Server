@@ -11,9 +11,10 @@ export async function WebpackDev(config : ConfigReactJS, WebpackCompiler : Webpa
             port : config.port,
             historyApiFallback : config.options.WebpackDev.historyApiFallback
         }
+        /*** Mergering Options Compiler Options WebPack Dev Server */
         let mWebpackDevDefaultCompilerOptions : WebpackDevConfig = merge(mWebpackCompilerOptions, config.options?.WebpackDev)
         let mWebpackDev = new webpackDev(mWebpackDevDefaultCompilerOptions, WebpackCompiler);
-
-        await resolve(mWebpackDev)
+        /** Return Variable Data Webpack Development **/
+        await resolve(mWebpackDev);
     })
 }

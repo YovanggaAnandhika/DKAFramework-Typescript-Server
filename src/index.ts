@@ -255,12 +255,12 @@ export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigRea
                 //$$$$$$$$$$$ DELETE GET CONFIG FUNCTION FOR GET CONFIG $$$$$$$$$$$$
                 await REACTJS(mTempReactJS)
                     .then(async (server) => {
-                        await server.listen(config.port, config.host, async (error) => {
+                        /*await server.listen(config.port, config.host, async (error) => {
                             if (!error){
-                                /** ================= DEBUG CONSOLE ======================= **/
+                                /!** ================= DEBUG CONSOLE ======================= **!/
                                 (mTempReactJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
                                     logger.info(`Finish Prosessing Library`) : null;
-                                /** ================= DEBUG CONSOLE ======================= **/
+                                /!** ================= DEBUG CONSOLE ======================= **!/
                                 await resolve({
                                     status: true,
                                     code: 200,
@@ -284,8 +284,8 @@ export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigRea
                                     await process.exit(0);
                                 }, 2000);
                             }
-                        })
-                        /*await server.start()
+                        })*/
+                        await server.start()
                             .then(async () => {
                                 (mTempReactJS.state === Options.Server.State.SERVER_STATE_DEVELOPMENT) ?
                                     logger.info(`Server Running Successfully - port : "${mTempReactJS.port}"`) : null;
@@ -312,7 +312,7 @@ export async function Server(config : ConfigFastify | ConfigSocketIO | ConfigRea
                                 setTimeout(async () => {
                                     await process.exit(0);
                                 }, 2000);
-                            });*/
+                            });
                     })
                     .catch(async (error) => {
                         await rejected({

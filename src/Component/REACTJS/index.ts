@@ -53,9 +53,10 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
                                     defaultConfigurationWebpack.output.path = config.settings.buildOutputFile.path
                                 }*/
                                 let configurationWebpackMergered: ConfigReactJSOptionsWebpackConfiguration = merge(defaultConfigurationWebpack, config?.options?.Webpack?.configuration);
-
+                                /** Init Webpack Compiler **/
                                 Webpack(configurationWebpackMergered)
                                     .then(async (compiler) => {
+                                        /** Init Webpack Dev Server **/
                                         await WebpackDev(config, compiler)
                                             .then(async (server) => {
                                                 await resolve(server);
