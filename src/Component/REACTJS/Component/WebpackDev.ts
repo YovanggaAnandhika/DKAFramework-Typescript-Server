@@ -3,7 +3,6 @@ import {Compiler as WebpackCompiler} from "webpack";
 import {merge} from "lodash";
 import {ConfigReactJS} from "../../../Interfaces/Config/ReactJS";
 
-
 export async function WebpackDev(config : ConfigReactJS, WebpackCompiler : WebpackCompiler) : Promise<webpackDev>{
     return new Promise(async (resolve, rejected) => {
         let mWebpackCompilerOptions : WebpackDevConfig= {
