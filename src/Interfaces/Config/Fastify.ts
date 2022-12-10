@@ -1,22 +1,29 @@
 import {EngineFastify, FastifyInstances, FastifyRegistringPlugins, State} from "../../Type/types";
-import {ConfigSystemMultiTypes, MultiplePluginsServer} from "../Global";
+import {ConfigSystemLogger, ConfigSystemMultiTypes, MultiplePluginsServer} from "../Global";
 import nodemon from "nodemon";
-import {FastifyServerOptions} from "fastify";
 import http from "http";
 import {FastifyBaseLogger} from "fastify/types/logger";
+import {GlobalConfig} from "./Global";
+import {FastifyServerOptions} from "fastify";
 
 export interface ConfigServerFastifySettingsNodemon {
-    enabled ?: boolean,
-    settings ?: nodemon.Settings
+    enabled?: boolean,
+    settings?: nodemon.Settings
+}
+
+export interface ConfigServerFastifySettingsElectron {
+    enabled?: boolean,
+
 }
 
 export interface ConfigServerFastifySettings extends FastifyServerOptions<http.Server, FastifyBaseLogger> {
-    registerModule ?: FastifyRegistringPlugins | undefined,
-    nodemon ?: ConfigServerFastifySettingsNodemon
+    registerModule?: FastifyRegistringPlugins | undefined,
+    nodemon?: ConfigServerFastifySettingsNodemon,
+    electron?: ConfigServerFastifySettingsElectron,
 }
 
 export interface ConfigServerFastifyPluginsPointOfViewSettingsEngine {
-    ejs ?: any
+    ejs?: any
 }
 
 
@@ -42,21 +49,22 @@ export interface ConfigServerFastifyPluginsStatic {
 }
 
 export interface ConfigServerFastifyPlugins extends MultiplePluginsServer {
-    pointOfView ?: ConfigServerFastifyPluginsPointOfView,
-    static ?: ConfigServerFastifyPluginsStatic
+    pointOfView?: ConfigServerFastifyPluginsPointOfView,
+    static?: ConfigServerFastifyPluginsStatic
 }
 
-export interface ConfigFastify {
+export interface ConfigFastify extends GlobalConfig {
     /**
      * The State Development or Production
      * **/
-    state ?: State,
-    engine ?: EngineFastify | undefined,
-    host ?: string | undefined,
-    port ?: number | string | undefined,
-    app ?: FastifyInstances,
-    getConfig ?: (config : ConfigFastify) => void | Promise<void>,
-    settings ?: ConfigServerFastifySettings | undefined,
-    plugins ?: ConfigServerFastifyPlugins | undefined,
-    Constanta ?: ConfigSystemMultiTypes | undefined
+    state?: State,
+    engine?: EngineFastify | undefined,
+    logger?: ConfigSystemLogger | undefined,
+    host?: string | undefined,
+    port?: number | string | undefined,
+    app?: FastifyInstances,
+    getConfig?: (config: ConfigFastify) => void | Promise<void>,
+    settings?: ConfigServerFastifySettings | undefined,
+    plugins?: ConfigServerFastifyPlugins | undefined,
+    Constanta?: ConfigSystemMultiTypes | undefined
 }

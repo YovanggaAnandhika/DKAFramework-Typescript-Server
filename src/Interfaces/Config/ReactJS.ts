@@ -7,14 +7,16 @@ import Webpack, {
     MultiStats as WebpackMultiStats,
     Stats as WebpackStats
 } from "webpack";
-import {ConfigSystemMultiTypes} from "../Global";
+import {ConfigSystemLogger, ConfigSystemMultiTypes} from "../Global";
 
 import {Configuration as WebpackDevConfig} from "webpack-dev-server";
 import {Options as HTMLWebpackPluginOptions} from "html-webpack-plugin";
+import {DotenvConfigOptions} from "dotenv";
+import {GlobalConfig} from "./Global";
 
 
 export interface ConfigReactJSConfig {
-    compiler : WebpackConfiguration
+    compiler: WebpackConfiguration
 }
 
 export type webpackDevTypes = WebpackCompiler | WebpackMultiCompiler | WebpackDevConfig;
@@ -39,13 +41,33 @@ interface MultiCompilerOptions {
 }
 
 export interface ConfigReactJSOptionsWebpackMultiCompiler {
-    configuration ?: readonly ConfigReactJSOptionsWebpackConfiguration[] & MultiCompilerOptions,
-    callback ?: CallbackWebpack<WebpackMultiStats> | undefined
+    configuration?: readonly ConfigReactJSOptionsWebpackConfiguration[] & MultiCompilerOptions,
+    callback?: CallbackWebpack<WebpackMultiStats> | undefined
+}
+
+export interface ConfigReactJSOptionsElectronOptions {
+    filename?: string | undefined
+}
+
+export interface ConfigReactJSOptionsElectron {
+    enabled?: boolean,
+    options?: ConfigReactJSOptionsElectronOptions
+}
+
+export interface ConfigReactJSOptionsEnviromentEnv {
+    mode?: "ENV",
+    option?: DotenvConfigOptions
+}
+
+export interface ConfigReactJSOptionsEnviromentConst {
+    mode?: "CONST"
 }
 
 export interface ConfigReactJSOptions {
-    Webpack ?: ConfigReactJSOptionsWebpackCompiler | ConfigReactJSOptionsWebpackMultiCompiler,
-    WebpackDev ?: WebpackDevConfig,
+    Webpack?: ConfigReactJSOptionsWebpackCompiler | ConfigReactJSOptionsWebpackMultiCompiler,
+    WebpackDev?: WebpackDevConfig,
+    Enviroment?: ConfigReactJSOptionsEnviromentEnv | ConfigReactJSOptionsEnviromentConst
+    Electron?: ConfigReactJSOptionsElectron
 }
 
 export type ConfigReactJSPluginsDefault = (
@@ -73,22 +95,24 @@ export interface ConfigReactJSSettings {
     buildOutputFile ?: ConfigReactJSSettingsBuildOutputFile
 }
 
-export interface ConfigReactJS {
+export interface ConfigReactJS extends GlobalConfig {
     /**
      * The State Development or Production
      * **/
-    state? : State,
-    host ?: string | undefined,
-    port ?: number | undefined,
-    engine ?: EngineReactJS | undefined,
-    entry ?:
+    state?: State,
+    host?: string | undefined,
+    port?: number | undefined,
+    engine?: EngineReactJS | undefined,
+    logger?: ConfigSystemLogger | undefined,
+    entry?:
         | string
         | (() => string | WebpackEntryObject | string[] | Promise<string | WebpackEntryObject | string[]>)
         | WebpackEntryObject
         | string[],
-    plugins ?: ConfigReactJSPluginsModel,
-    options ?: ConfigReactJSOptions,
-    settings ?: ConfigReactJSSettings,
-    getConfig? : (config : ConfigReactJS) => void | Promise<void>,
-    Constanta ?: ConfigSystemMultiTypes | undefined
+    component?: Function | undefined,
+    plugins?: ConfigReactJSPluginsModel,
+    options?: ConfigReactJSOptions,
+    settings?: ConfigReactJSSettings,
+    getConfig?: (config: ConfigReactJS) => void | Promise<void>,
+    Constanta?: ConfigSystemMultiTypes | Object | undefined
 }

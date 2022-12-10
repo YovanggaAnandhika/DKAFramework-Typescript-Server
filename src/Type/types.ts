@@ -1,6 +1,7 @@
 import {FastifyInstance, FastifyPluginOptions} from "fastify";
-import {Server, Socket} from "socket.io";
+import {RemoteSocket, Server, Socket as SocketServer} from "socket.io";
 import * as Sock from "socket.io-client";
+import {Socket} from "socket.io-client";
 import {DefaultEventsMap} from "socket.io/dist/typed-events";
 import {ExtendedError} from "socket.io/dist/namespace";
 import {ConfigReactJS} from "../Interfaces/Config/ReactJS";
@@ -11,23 +12,30 @@ import {
 } from "../Interfaces/Config/SocketIO/Server";
 import {ConfigFastify} from "../Interfaces/Config/Fastify";
 import {Router} from "express";
+import {ReactNode} from "react";
+import {DisconnectDescription} from "socket.io-client/build/esm-debug/socket";
+import DisconnectReason = Socket.DisconnectReason;
 
 export * from "fastify";
 
 export type SocketIOInstance = Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
-export type SocketIOInstanceSocket = Socket<DefaultEventsMap, DefaultEventsMap, any>;
+export type SocketIOInstanceSocket = SocketServer<DefaultEventsMap, DefaultEventsMap, any>;
+export type SocketIOInstanceSocketRemote = RemoteSocket<DefaultEventsMap, any>;
 export type SocketIOInstanceClient = Sock.Socket<DefaultEventsMap, DefaultEventsMap>;
-export type SocketIOInstances = (io : SocketIOInstance) => Promise<void> | void | undefined;
-export type SocketIOInstancesMiddleware = (io : Socket<DefaultEventsMap, DefaultEventsMap>, next: (err?: (ExtendedError | undefined)) => void) => Promise<void> | void | undefined;
-export type FastifyRegistringPlugins = (app : FastifyInstance) => Promise<FastifyInstance>;
-export type FastifyInstances = (app : FastifyInstance, opts: FastifyPluginOptions, next : any) => Promise<void> | void | undefined;
-export type SocketIOInstancesClient = (io : SocketIOInstanceClient) => Promise<void> | void | undefined;
-export type SocketIOMiddleware = (io : ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next : (error ?: Error) => void) => void | Promise<void>;
-export type ExpressJSRoutesInstance = (router : Router) => void | Promise<void>;
+export type SocketIOInstances = (io: SocketIOInstance) => Promise<void> | void | undefined;
+export type SocketIOInstancesMiddleware = (io: SocketServer<DefaultEventsMap, DefaultEventsMap>, next: (err?: (ExtendedError | undefined)) => void) => Promise<void> | void | undefined;
+export type FastifyRegistringPlugins = (app: FastifyInstance) => Promise<FastifyInstance>;
+export type FastifyInstances = (app: FastifyInstance, opts: FastifyPluginOptions, next: any) => Promise<void> | void | undefined;
+export type SocketIOInstancesClient = (io: SocketIOInstanceClient) => Promise<void> | void | undefined;
+export type SocketIOMiddleware = (io: ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next: (error ?: Error) => void) => void | Promise<void>;
+export type ExpressJSRoutesInstance = (router: Router) => void | Promise<void>;
 
-export type SecurityAuthorizationCallbackOauth = (callback : ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next : (error ?: Error) => void) => void | Promise<void>;
-export type SecurityAuthorizationCallbackBasic = (callback : ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic, next : (error ?: Error) => void) => void | Promise<void>;
+export type SecurityAuthorizationCallbackOauth = (callback: ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next: (error ?: Error) => void) => void | Promise<void>;
+export type SecurityAuthorizationCallbackBasic = (callback: ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic, next: (error ?: Error) => void) => void | Promise<void>;
 export type SecurityAuthorizationMode = "OAUTH2" | "BASIC";
+/**
+ * state development
+ */
 export type State = "none" | "development" | "production";
 export type Mode = "compile" | "server";
 export type EngineFastify = "FASTIFY";
@@ -53,21 +61,61 @@ export function isReactJS(obj: any): obj is ConfigReactJS {
 }
 
 export type MetaDataSocketIOClient = {
-    id ?: string,
-    timestamp ?: {
-        lastTime ?: {
-            onConnect ?: {
-                unix ?: number,
-                humanize ?: string
+    id?: string,
+    io?: Sock.Socket<DefaultEventsMap, any>,
+    reason?: DisconnectReason | undefined,
+    description?: DisconnectDescription | undefined,
+    timestamp?: {
+        lastTime?: {
+            onConnect?: {
+                unix?: number,
+                humanize?: string
             },
-            onDisconnect ?: {
-                unix ?: number,
-                humanize ?: string
+            onDisconnect?: {
+                unix?: number,
+                humanize?: string
             }
         }
     }
 } | undefined;
 
+
+export type ReactNODE = ReactNode
+
+export interface SchemaReactSingleSessionManagement {
+    sessionName?: string,
+    redirectTo?: ReactNODE
+}
+
+export interface SchemaReactSingle {
+    name?: string | number,
+    index?: boolean,
+    path?: string,
+    exact?: boolean,
+    component?: ReactNODE,
+    children?: SchemaReactArray
+}
+
+export type SchemaReactArray = Array<SchemaReactSingle>;
+
+export type LEVEL_NONE = "none";
+export type LEVEL_VERBOSE = "verbose";
+export type LEVEL_SUMMARY = "summary";
+export type LEVEL_ERROR_ONLY = "errors-only";
+export type LEVEL_ERROR_WARNINGS = "errors-warnings"
+export type LEVEL_MINIMAL = "minimal";
+export type LEVEL_NORMAL = "normal";
+export type LEVEL_DETAILED = "detailed";
+
+export type LOGGER_LEVEL = | boolean
+    | LEVEL_NONE
+    | LEVEL_VERBOSE
+    | LEVEL_SUMMARY
+    | LEVEL_ERROR_ONLY
+    | LEVEL_ERROR_WARNINGS
+    | LEVEL_MINIMAL
+    | LEVEL_NORMAL
+    | LEVEL_DETAILED;
 
 /**
  * @type EngineSocketIO

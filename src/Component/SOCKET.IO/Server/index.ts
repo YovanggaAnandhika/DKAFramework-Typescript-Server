@@ -1,14 +1,16 @@
-import {ConfigSocketIO} from "../../../Interfaces/Config/SocketIO/Server";
+import {ConfigSocketIO, ConfigSocketIONamespaceGetClientConnected} from "../../../Interfaces/Config/SocketIO/Server";
 import {Server, Socket} from "socket.io";
-import {createServer, Server as mServerHTTP} from "http";
+import {createServer, Server as mServerHTTP, ServerOptions as mHTTPServerOptions} from "http";
 import {createServer as createSecureServer, Server as mServerHTTPS} from "https";
 import {SocketIOInstances} from "../../../Type/types";
 import Middleware from "./Middleware";
 // @ts-ignore
 import {setupMaster, setupWorker} from "@socket.io/sticky";
 import {DefaultEventsMap} from "socket.io/dist/typed-events";
-import {createClient} from "redis";
-import {createAdapter} from "@socket.io/redis-adapter";
+import {Logger} from "winston";
+import fastify, {FastifyInstance} from "fastify";
+
+const encryptSocket = require('socket.io-encrypt')
 
 
 /**
@@ -19,81 +21,140 @@ import {createAdapter} from "@socket.io/redis-adapter";
  *
  */
 
-let mClientList : Array<Socket<DefaultEventsMap, DefaultEventsMap, any>> = [];
+let mClientList: Array<Socket<DefaultEventsMap, DefaultEventsMap, any>> = [];
+let mAllClientListTotal: number = 0;
+let io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+let mScopeSocket: ConfigSocketIONamespaceGetClientConnected = {};
 
-const SOCKET_IO = async (config : ConfigSocketIO) : Promise<mServerHTTP | mServerHTTPS> => {
-    let mHttp : mServerHTTP | mServerHTTPS;
+export const SOCKET_IO = async (config: ConfigSocketIO, logger: Logger): Promise<mServerHTTP | mServerHTTPS | FastifyInstance> => {
+    let mHttp: mServerHTTP | mServerHTTPS | FastifyInstance;
+    logger.info("checking server protocol")
     switch (config.options?.server?.protocol) {
+        case "FASTIFY" :
+            mHttp = (config.options?.server?.settings !== undefined) ?
+                fastify(config.options?.server?.settings) : fastify();
+            logger.info(`socket.io server binding to protocol server http or https`)
+            if (config?.options?.server?.app !== undefined) {
+
+                await mHttp.register(config?.options?.server?.app)
+            }
+            io = new Server((mHttp as FastifyInstance).server, config.options?.socket);
+            break;
         case "HTTPS" :
+            logger.info(`server socket io with https protocol is selected`)
             mHttp = (config.options?.server?.settings !== undefined) ?
                 createSecureServer(config.options?.server?.settings) : createSecureServer();
+            logger.info(`socket.io server binding to protocol server http or https`)
+            io = new Server(mHttp, config.options?.socket);
             break;
         default :
+            logger.info(`server socket io with http protocol is selected`)
             mHttp = (config.options?.server?.settings !== undefined) ?
-                createServer(config.options?.server?.settings) : createServer();
+                createServer(config.options?.server?.settings as mHTTPServerOptions) : createServer();
+            logger.info(`socket.io server binding to protocol server http or https`)
+            io = new Server(mHttp, config.options?.socket);
+
     }
-    let io = await new Server(mHttp, config.options?.socket);
+
+    if (config?.options?.encryption?.enabled) {
+        await io.use(encryptSocket(config?.options?.encryption?.settings?.key))
+    }
     return new Promise(async (resolve, rejected) => {
-
         try {
-            if (config.options?.socket?.costumMiddleware !== undefined){
+            logger.info(`server socket io checking costum middleware`)
+            if (config.options?.socket?.costumMiddleware !== undefined) {
+                logger.info(`server socket io costumMiddleware is defined`)
                 await io.use(config.options.socket.costumMiddleware);
-            }else{
-                await io.use(await Middleware(config));
+            } else {
+                logger.info(`server socket io costumMiddleware default config`)
+                await io.use(await Middleware(config, logger));
             }
+            logger.info(`server socket io create event connection`);
 
-            await io.on("connection", async (io) => {
-                (config.onConnection !== undefined) ? config.onConnection(io) : null;
-                mClientList.push(io);
+
+            await io.on("connection", async (socket) => {
+                logger.info(`server socket io become event "connected" with id ${socket.id}`);
+                (config.onConnection !== undefined) ? config.onConnection(socket) : null;
                 (config.onClient !== undefined) ? config.onClient({
-                    ClientList : mClientList,
-                    CurrentClient : io,
-                    TotalClientConnected : mClientList.length
+                    ClientList: mClientList,
+                    CurrentClient: socket,
+                    TotalClientConnected: mClientList.length
                 }) : null;
+                mClientList.push(socket);
+                await socket.on("error", async (error) => {
+                    (config.onError !== undefined) ? config.onError(error) : null;
+                });
 
                 await io.on("disconnect", async (reason) => {
+                    logger.info(`server socket io become event "disconnected"`);
                     (config.onDisconnect !== undefined) ? config.onDisconnect(reason) : null;
-                    mClientList = mClientList.filter(item => item !== io);
+                    mClientList = mClientList.filter(item => item !== socket);
                     (config.onClient !== undefined) ? config.onClient({
-                        ClientList : mClientList,
-                        CurrentClient : io,
-                        TotalClientConnected : mClientList.length
+                        ClientList: mClientList,
+                        CurrentClient: socket,
+                        TotalClientConnected: mClientList.length
                     }) : null;
-                })
+                });
             });
 
-            //@@ Detect IO Callback
-            if (config.io !== undefined) {
-                await config.io(io);
-            }
-            //End @@ Detect IO Callback
+            await io.on("new_namespace", async (namespace) => {
+                if (config?.onNamespace !== undefined) {
+                    let mNameSpace = (namespace.name.charAt(0) === "/") ? namespace.name.substring(1, namespace.name.length) : namespace.name;
+                    await namespace.on("connection", async (socket) => {
+                        await (config.onNamespace?.[mNameSpace].onConnection !== undefined) ? config.onNamespace?.[mNameSpace].onConnection?.(socket) : null;
+                        await namespace.on("disconnect", async (reason) => {
+                            await (config.onNamespace?.[mNameSpace].onDisconnect !== undefined) ? config.onNamespace?.[mNameSpace].onDisconnect?.(reason) : null;
+                        });
+                    });
+                }
 
-            process.on("SIGHUP", function (){
+            })
+
+            //End @@ Detect IO Callback
+            logger.info(`proccess binding SIGHUP registering ...`)
+            process.on("SIGHUP", function () {
+                logger.info(`proccess event sighup is detected. kill proccess.`)
                 io.close();
                 mHttp.close();
                 process.kill(process.pid);
             })
 
-            if (config.plugins?.redis?.enabled === true){
-                if (config.plugins.redis.settings !== undefined){
-                    const pubClient = createClient(config.plugins.redis.settings);
-                    const subClient = pubClient.duplicate();
-                    pubClient.on("error", async (error) => {
-                        console.log("terjadi error")
-                    });
-                    const createAdapterRedist = createAdapter(pubClient, subClient);
-                    await io.adapter(createAdapterRedist)
-                    await resolve(mHttp);
-                }else{
-                    await rejected({ status : false, msg : `redis plugins enabled. but, the settings not declare options`})
-                }
-            }else{
-                await resolve(mHttp);
+            //@@ Detect IO Callback
+            logger.info(`server socket io checking pointing defined or not`)
+            if (config.io !== undefined) {
+                logger.info(`server socket io pointing io is exist. binding ...`)
+                await config.io(io);
             }
+            await io._nsps.forEach(function (io, namespaceName, array) {
+                io.on("connection", async (socket) => {
+                    mAllClientListTotal += 1;
+                    if (config.onAllClient !== undefined) {
+                        let fetchSocket = await io.fetchSockets();
+                        mScopeSocket[`${namespaceName}`] = {
+                            CurrentClient: io,
+                            TotalClientConnected: fetchSocket.length
+                        }
+                        mScopeSocket["AllClientConnected"] = mAllClientListTotal;
+                        await config.onAllClient(mScopeSocket);
+                    }
+                    socket.on("disconnect", async () => {
+                        mAllClientListTotal -= 1;
+                        if (config.onAllClient !== undefined) {
+                            let fetchSocket = await io.fetchSockets();
+                            mScopeSocket[`${namespaceName}`] = {
+                                CurrentClient: io,
+                                TotalClientConnected: fetchSocket.length
+                            }
+                            mScopeSocket["AllClientConnected"] = mAllClientListTotal;
+                            await config.onAllClient(mScopeSocket);
+                        }
+                    })
+                })
+            });
 
+            await resolve(mHttp);
 
-
-        }catch (e) {
+        } catch (e) {
             await rejected(e);
         }
     })

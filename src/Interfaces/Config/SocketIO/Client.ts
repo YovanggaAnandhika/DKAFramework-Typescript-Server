@@ -1,33 +1,54 @@
-import {
-    EngineSocketIOClient,
-    MetaDataSocketIOClient,
-    SocketIOInstanceClient,
-    SocketIOInstancesClient,
-    State
-} from "../../../Type/types";
+import {EngineSocketIOClient, MetaDataSocketIOClient, SocketIOInstancesClient, State} from "../../../Type/types";
 import {ManagerOptions, SocketOptions} from "socket.io-client"
-import {ConfigSystemMultiTypes} from "../../Global";
+import {ConfigSystemLogger, ConfigSystemMultiTypes} from "../../Global";
+import {GlobalConfig} from "../Global";
 
-export interface ConfigSocketIOClient {
+export type ConfigSocketIOClientOnConnect = (io: MetaDataSocketIOClient) => Promise<void> | void;
+export type ConfigSocketIOClientConnectError = (error: any) => Promise<void> | void | undefined;
+export type ConfigSocketIOClientError = (error: any) => Promise<void> | void | undefined;
+export type ConfigSocketIOClientOnDisconnect = (id: MetaDataSocketIOClient) => Promise<void> | void | undefined;
+export type ConfigSocketIOClientEventOnReconnect = (attempt: number) => Promise<void> | void | undefined;
+export type ConfigSocketIOClientEventOnReconnectAttempt = (attempt: number) => Promise<void> | void | undefined;
+export type ConfigSocketIOClientEventOnReconnectError = (error: any) => Promise<void> | void | undefined;
+export type ConfigSocketIOClientEventOnReconnectFailed = () => Promise<void> | void | undefined;
+export type ConfigSocketIOClientEventOnPing = (latency ?: number) => Promise<void> | void | undefined;
+export type ConfigSocketIOClientEventOnError = (error: any) => Promise<void> | void | undefined;
+
+export interface ConfigSocketIOClientSettingsEncryptionSettings {
+    key?: string
+}
+
+export interface ConfigSocketIOClientSettingsEncryption {
+    enabled?: boolean,
+    settings?: ConfigSocketIOClientSettingsEncryptionSettings
+}
+
+export interface ConfigSocketIOClientSettings extends Partial<ManagerOptions & SocketOptions> {
+    encryption?: ConfigSocketIOClientSettingsEncryption
+}
+
+export interface ConfigSocketIOClient extends GlobalConfig {
     /**
      * The State Development or Production
      * **/
-    state? : State,
-    engine ?: EngineSocketIOClient | undefined,
-    host ?: string | undefined,
-    port ?: number | undefined,
-    io ?: SocketIOInstancesClient | undefined,
-    costumNameSpace ?: string | undefined,
-    onConnect ?: (io : SocketIOInstanceClient) => Promise<void> | void,
-    onConnectError ?: (error : any) => Promise<void> | void | undefined,
-    onDisconnect ?: (id : MetaDataSocketIOClient) => Promise<void> | void | undefined,
-    events ?: {
-        onReconnect ?: (attempt : number) => Promise<void> | void | undefined,
-        onReconnectAttempt ?: (attempt : number) => Promise<void> | void | undefined,
-        onReconnectError ?: (error : any) => Promise<void> | void | undefined,
-        onReconnectFailed ?: () => Promise<void> | void | undefined,
-        onPing ?: () => Promise<void> | void | undefined,
-        onError ?: (error : any) => Promise<void> | void | undefined,
+    state?: State,
+    engine?: EngineSocketIOClient | undefined,
+    logger?: ConfigSystemLogger | undefined,
+    host?: string | undefined,
+    port?: number | undefined,
+    io?: SocketIOInstancesClient | undefined,
+    costumNameSpace?: string | undefined,
+    onConnect?: ConfigSocketIOClientOnConnect,
+    onConnectError?: ConfigSocketIOClientConnectError,
+    onError?: ConfigSocketIOClientError,
+    onDisconnect?: ConfigSocketIOClientOnDisconnect,
+    events?: {
+        onReconnect?: ConfigSocketIOClientEventOnReconnect,
+        onReconnectAttempt?: ConfigSocketIOClientEventOnReconnectAttempt,
+        onReconnectError?: ConfigSocketIOClientEventOnReconnectError,
+        onReconnectFailed?: ConfigSocketIOClientEventOnReconnectFailed,
+        onPing?: ConfigSocketIOClientEventOnPing,
+        onError?: ConfigSocketIOClientEventOnError,
     }
 
     /**
@@ -54,7 +75,7 @@ export interface ConfigSocketIOClient {
      *             console.log(`connection socket.io-client fatal error, with message ${error.toString()}`)
      *         });
      */
-    getConfig? : (config : ConfigSocketIOClient) => void | Promise<void>,
-    settings? : Partial<ManagerOptions & SocketOptions> | undefined,
-    Constanta ?: ConfigSystemMultiTypes | undefined
+    getConfig?: (config: ConfigSocketIOClient) => void | Promise<void>,
+    settings?: ConfigSocketIOClientSettings | undefined,
+    Constanta?: ConfigSystemMultiTypes | undefined
 }

@@ -10,8 +10,18 @@ export async function Entry(config : ConfigReactJS) : Promise<entry> {
         if (fs.existsSync(`${config.entry}`)){
             await resolve(config.entry)
         }else {
-            let defaultEntry = path.join(__dirname, "./../Template/app.js");
-            await resolve(defaultEntry);
+            let tsxFile = path.join(__dirname, "./../Template/app.tsx");
+            let jsFile = path.join(__dirname, "./../Template/app.js");
+            if (fs.existsSync(tsxFile)) {
+                await resolve(tsxFile);
+            } else {
+                if (fs.existsSync(jsFile)) {
+                    await resolve(jsFile);
+                } else {
+                    await rejected({status: false, code: 500, msg: `error Entry Parameter Exception`});
+                }
+            }
+
         }
     })
 }

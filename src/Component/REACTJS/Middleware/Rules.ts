@@ -24,12 +24,12 @@ export async function Rules(config : ConfigReactJS) : Promise<(RuleSetRule | "..
         });
 
         WebpackRules.push({
-            test: /\.(png|jpe?g|gif|svg)$/i,
+            test: /\.(mp4|mkv|avi|mp3|wav|png|jpe?g|gif|svg)$/i,
             use: [
                 {
                     loader: 'file-loader',
                 },
-            ],
+            ]
         })
         WebpackRules.push({
             test: /\.(ts|js)x?$/,

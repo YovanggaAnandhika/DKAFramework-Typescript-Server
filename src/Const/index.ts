@@ -7,8 +7,8 @@ export interface PackageJson {
     version : string | undefined
 }
 const mInformation : PackageJson = {
-    author : require(path.join(__dirname, "./../../package.json")).author,
-    version : require(path.join(__dirname, "./../../package.json")).version
+    author: require(path.join(__dirname, "./../../package.json")).author,
+    version: require(path.join(__dirname, "./../../package.json")).version
 }
 
 

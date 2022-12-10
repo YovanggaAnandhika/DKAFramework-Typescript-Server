@@ -6,14 +6,23 @@ import {Entry} from "./Middleware/Entry";
 import {Webpack} from "./Component/Webpack";
 import {WebpackDev} from "./Component/WebpackDev";
 import {ConfigReactJS, ConfigReactJSOptionsWebpackConfiguration} from "../../Interfaces/Config/ReactJS";
+import {Options} from "html-webpack-plugin";
+import {Logger} from "winston";
 
-export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
+export interface REACTJS_CALLBACK {
+    WebpackDev: webpackDev,
+    options?: {
+        HTMLPluginConfig?: Options
+    }
+}
 
-    function checkModuleExist(name : string){
+export const REACTJS = async (config: ConfigReactJS, logger: Logger): Promise<REACTJS_CALLBACK> => {
+
+    function checkModuleExist(name: string) {
         try {
             require.resolve(name);
             return true;
-        }catch (e) {
+        } catch (e) {
             return false;
         }
     }
@@ -22,7 +31,6 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
      * @return Promise<webpackDev>
      */
     return new Promise(async (resolve, rejected) => {
-
         await Entry(config)
             .then(async (entry) => {
                 await Plugins(config)
@@ -32,20 +40,13 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
                                 let defaultConfigurationWebpack: ConfigReactJSOptionsWebpackConfiguration = {
                                     mode: config.state,
                                     entry: entry,
-                                    plugins: plugins,
-                                    infrastructureLogging: {
-                                        level: "error"
-                                    },
-                                    performance : {
+                                    plugins: plugins.ConfigPluginWebpack,
+                                    performance: {
                                         hints: false
                                     },
                                     optimization: {
-                                        splitChunks: {
-                                            minSize: 10000,
-                                            maxSize: 250000,
-                                        }
+                                        usedExports: true,
                                     },
-                                    stats: "errors-only",
                                     output: {
                                         publicPath: "/",
                                         filename: 'DKAFramework.js'
@@ -63,12 +64,12 @@ export const REACTJS = async (config : ConfigReactJS) : Promise<webpackDev>=> {
                                 }*/
                                 let configurationWebpackMergered: ConfigReactJSOptionsWebpackConfiguration = merge(defaultConfigurationWebpack, config?.options?.Webpack?.configuration);
                                 /** Init Webpack Compiler **/
-                                Webpack(configurationWebpackMergered)
+                                Webpack(config, configurationWebpackMergered)
                                     .then(async (compiler) => {
                                         /** Init Webpack Dev Server **/
-                                        await WebpackDev(config, compiler)
+                                        await WebpackDev(config, compiler, logger)
                                             .then(async (server) => {
-                                                await resolve(server);
+                                                await resolve({WebpackDev: server});
                                             })
                                             .catch(async (error) => {
                                                 rejected(error)
