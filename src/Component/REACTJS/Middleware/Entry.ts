@@ -5,6 +5,7 @@ import path from "path";
 
 type entry = undefined | string | (() => string | WebpackEntryObject | string[] | Promise<string | WebpackEntryObject | string[]>) | WebpackEntryObject | string[];
 
+/** **/
 export async function Entry(config : ConfigReactJS) : Promise<entry> {
     return new Promise(async (resolve, rejected) => {
         if (fs.existsSync(`${config.entry}`)){

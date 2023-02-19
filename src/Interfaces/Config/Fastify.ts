@@ -40,17 +40,28 @@ export interface ConfigServerFastifyPluginsPointOfView {
 
 
 export interface ConfigServerFastifyPluginsStaticSettings {
-    root ?: string,
-    prefix ?: string
+    root?: string,
+    prefix?: string
 }
+
 export interface ConfigServerFastifyPluginsStatic {
-    enabled ?: boolean,
-    settings ?: ConfigServerFastifyPluginsStaticSettings
+    enabled?: boolean,
+    settings?: ConfigServerFastifyPluginsStaticSettings
+}
+
+export interface ConfigServerFastifyPluginsFormBodySettings {
+
+}
+
+export interface ConfigServerFastifyPluginsFormBody {
+    enabled?: boolean,
+    settings?: ConfigServerFastifyPluginsFormBodySettings
 }
 
 export interface ConfigServerFastifyPlugins extends MultiplePluginsServer {
     pointOfView?: ConfigServerFastifyPluginsPointOfView,
-    static?: ConfigServerFastifyPluginsStatic
+    static?: ConfigServerFastifyPluginsStatic,
+    formBody?: ConfigServerFastifyPluginsFormBody
 }
 
 export interface ConfigFastify extends GlobalConfig {

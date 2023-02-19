@@ -39,7 +39,7 @@ export async function Plugins(config: ConfigReactJS): Promise<PluginsWebpackType
                             'process.env': JSON.stringify(merge({PUBLIC_URL: `http://${config.host}:${config.port}`}, process.env))
                         }))
                     } else {
-                        rejected({status: false, code: 500, msg: `enviroment mode is env file. but File not exist`})
+                        rejected({status: false, code: 500, msg: `environment mode is env file. but File not exist`})
                     }
                     break;
                 case "CONST" :

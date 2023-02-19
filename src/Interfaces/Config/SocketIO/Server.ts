@@ -1,8 +1,6 @@
 import {
     EngineSocketIO,
     FastifyInstances,
-    SecurityAuthorizationCallbackBasic,
-    SecurityAuthorizationCallbackOauth,
     SocketIOInstances,
     SocketIOInstancesMiddleware,
     SocketIOInstanceSocket,
@@ -16,6 +14,7 @@ import {Server as HTTPServer, ServerOptions as ServerOptionsHttp} from "http";
 import {GlobalConfig} from "../Global";
 import {FastifyBaseLogger} from "fastify/types/logger";
 import {FastifyServerOptions} from "fastify";
+import {ConfigServerFastifyPlugins} from "../Fastify";
 
 
 export interface ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth {
@@ -28,25 +27,8 @@ export interface ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic {
     token?: string;
 }
 
-export interface ConfigServerSocketIOOptionsSecurityAuthorizationOauth {
-    enabled? : Boolean | undefined,
-    mode? : "OAUTH2" | undefined,
-    callback : SecurityAuthorizationCallbackOauth
-}
-
-export interface ConfigServerSocketIOOptionsSecurityAuthorizationBasic {
-    enabled? : Boolean | undefined,
-    mode? : "BASIC" | undefined,
-    callback : SecurityAuthorizationCallbackBasic
-}
-
-
-export interface ConfigServerSocketIOOptionsSecurity {
-    authorization? : ConfigServerSocketIOOptionsSecurityAuthorizationBasic | ConfigServerSocketIOOptionsSecurityAuthorizationOauth | undefined,
-}
 
 export interface ConfigServerSocketIOOptionsSocket extends Partial<ServerOptions> {
-    security? : ConfigServerSocketIOOptionsSecurity | undefined,
     costumMiddleware? : SocketIOInstancesMiddleware | undefined,
 }
 
@@ -60,10 +42,18 @@ export interface ConfigSocketIOHTTPSettings {
     settings?: ServerOptionsHttp | undefined
 }
 
+
+export interface ConfigSocketIOFastifySettingsPlugins extends MultiplePluginsServer {
+
+}
+
 export interface ConfigSocketIOFastifySettings {
     protocol?: "FASTIFY",
     app?: FastifyInstances | undefined,
-    settings?: FastifyServerOptions<HTTPServer, FastifyBaseLogger> | undefined
+    settings?: {
+        plugin: ConfigSocketIOFastifySettingsPlugins | ConfigServerFastifyPlugins | undefined
+        server: FastifyServerOptions<HTTPServer, FastifyBaseLogger> | undefined
+    }
 }
 
 export interface ConfigSocketIOSettingsEncryptionSettings {

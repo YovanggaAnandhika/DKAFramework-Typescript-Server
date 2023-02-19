@@ -8,7 +8,8 @@ import Middleware from "./Middleware";
 import {setupMaster, setupWorker} from "@socket.io/sticky";
 import {DefaultEventsMap} from "socket.io/dist/typed-events";
 import {Logger} from "winston";
-import fastify, {FastifyInstance} from "fastify";
+import {FastifyInstance} from "fastify";
+import FastifySocketIOEngine from "./Component/FASTIFY";
 
 const encryptSocket = require('socket.io-encrypt')
 
@@ -31,14 +32,22 @@ export const SOCKET_IO = async (config: ConfigSocketIO, logger: Logger): Promise
     logger.info("checking server protocol")
     switch (config.options?.server?.protocol) {
         case "FASTIFY" :
-            mHttp = (config.options?.server?.settings !== undefined) ?
-                fastify(config.options?.server?.settings) : fastify();
+            //@deprecated
+            /*mHttp = (config.options?.server?.settings !== undefined) ?
+                fastify(config.options?.server?.settings.server) : fastify();
             logger.info(`socket.io server binding to protocol server http or https`)
             if (config?.options?.server?.app !== undefined) {
-
+                if (config.options?.server?.settings?.plugin !== undefined){
+                    let numPlugins = 0
+                    do {
+                        await mHttp.register(config.options?.server?.settings?.plugin[numPlugins])
+                        numPlugins += 1;
+                    }while (numPlugins < config.options?.server?.settings?.plugin.length)
+                }
                 await mHttp.register(config?.options?.server?.app)
-            }
-            io = new Server((mHttp as FastifyInstance).server, config.options?.socket);
+            }*/
+            let mFastify = await FastifySocketIOEngine(config.options?.server, logger)
+            io = new Server(mFastify.server, config.options?.socket);
             break;
         case "HTTPS" :
             logger.info(`server socket io with https protocol is selected`)

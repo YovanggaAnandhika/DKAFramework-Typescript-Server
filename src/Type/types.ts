@@ -1,5 +1,5 @@
 import {FastifyInstance, FastifyPluginOptions} from "fastify";
-import {RemoteSocket, Server, Socket as SocketServer} from "socket.io";
+import {Namespace, RemoteSocket, Server, Socket as SocketServer} from "socket.io";
 import * as Sock from "socket.io-client";
 import {Socket} from "socket.io-client";
 import {DefaultEventsMap} from "socket.io/dist/typed-events";
@@ -19,6 +19,7 @@ import DisconnectReason = Socket.DisconnectReason;
 export * from "fastify";
 
 export type SocketIOInstance = Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+export type SocketIOInstanceNamespace = Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 export type SocketIOInstanceSocket = SocketServer<DefaultEventsMap, DefaultEventsMap, any>;
 export type SocketIOInstanceSocketRemote = RemoteSocket<DefaultEventsMap, any>;
 export type SocketIOInstanceClient = Sock.Socket<DefaultEventsMap, DefaultEventsMap>;
@@ -124,3 +125,8 @@ export type EngineSocketIO = "SOCKET.IO";
 export type EngineSocketIOClient = "SOCKET.IO-CLIENT";
 export type EngineReactJS = "REACTJS";
 export type EngineExpressJS = "EXPRESSJS";
+
+export type LicenceMethodOffline = "LICENCE_KEY_OFFLINE";
+export type LicenceMethodOnline = "LICENCE_KEY_ONLINE";
+export type LicenceMethodHardwareMacAddress = "LICENCE_KEY_MAC_ADDRESS";
+export type LicenceMethodIpPublic = "LICENCE_KEY_IP_PUBLIC";

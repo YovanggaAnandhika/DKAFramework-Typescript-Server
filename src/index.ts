@@ -30,7 +30,7 @@ import SOCKET_IO_CLIENT from "./Component/SOCKET.IO/Client";
 import EXPRESS from "./Component/EXPRESS";
 import path from "path";
 import {existsSync} from "fs";
-import dotEnv from "dotenv";
+import * as dotEnv from "dotenv";
 import Encryption from "@dkaframework/encryption";
 import moment from "moment-timezone";
 import {FastifyInstance} from "fastify";
@@ -418,77 +418,20 @@ export async function Server(config: ConfigFastify | ConfigSocketIO | ConfigReac
             }
         }
 
-        if (config?.licenceKey !== undefined) {
-            if (existsSync(path.resolve(`${config?.licenceKey}`))) {
-                await dotEnv.config({
-                    path: config.licenceKey
-                });
-                if (process.env.LICENCE_KEY !== undefined) {
-                    try {
-                        let mData = enc.decodeIvSync(process.env.LICENCE_KEY) as any;
-                        let mTimeNow = moment().unix();
-                        let mDiffTimeLicence = (mData.expiresTo - mTimeNow);
-                        if (mDiffTimeLicence > 0) {
-                            await Runner(mData);
-                        } else {
-                            await rejected({
-                                status: false,
-                                code: 501,
-                                msg: `Licence Has Expires. please renew licence from developer to used`
-                            })
-                        }
-                    } catch (e) {
-                        await rejected({
-                            status: false,
-                            code: 505,
-                            msg: `licence data not valid "LICENCE_KEY" in ${config?.licenceKey}. check the licence key !`
-                        })
-                    }
-                } else {
-                    rejected({
-                        status: false,
-                        code: 500,
-                        msg: `field "LICENCE_KEY" in ${config.licenceKey} is not exist. please set first `
-                    })
-                }
-
-            } else {
-                try {
-                    let mData = enc.decodeIvSync(`${config?.licenceKey}`) as any;
-                    let mTimeNow = moment().unix();
-                    let mDiffTimeLicence = (mData.expiresTo - mTimeNow);
-                    if (mDiffTimeLicence > 0) {
-                        await Runner(mData);
-                    } else {
-                        await rejected({
-                            status: false,
-                            code: 501,
-                            msg: `Licence Has Expires. please renew licence from developer to used`
-                        })
-                    }
-                } catch (e) {
-                    await rejected({status: false, code: 505, msg: `licence data not valid. check the licence key !`})
-                }
-
-            }
-        } else {
-            rejected({
-                status: false,
-                code: 500,
-                msg: `licence options not found. please declare licence from owner developer`
+        await checkLicence(config)
+            .then(async (resultLicence) => {
+                await Runner(resultLicence)
             })
-        }
-
+            .catch(async (error) => {
+                rejected(error)
+            });
     });
 }
 
 export async function Client(config: ConfigSocketIOClient = SocketIOClientConfigurationDefault): Promise<DKAClientCallback> {
     let logger: Logger;
     return new Promise(async (resolve, rejected) => {
-        let enc = new Encryption({
-            secretKey: `Cyberhack2010`
-        });
-
+        //Runner Apps
         async function Runner(licenceInfo: any) {
             switch (config.engine) {
                 case Options.Server.Engine.SOCKETIO.Client :
@@ -564,67 +507,127 @@ export async function Client(config: ConfigSocketIOClient = SocketIOClientConfig
             }
         }
 
-        if (config?.licenceKey !== undefined) {
-            if (existsSync(path.resolve(`${config?.licenceKey}`))) {
-                await dotEnv.config({
-                    path: config.licenceKey
-                });
-                if (process.env.LICENCE_KEY !== undefined) {
-                    try {
-                        let mData = enc.decodeIvSync(process.env.LICENCE_KEY) as any;
-                        let mTimeNow = moment().unix();
-                        let mDiffTimeLicence = (mData.expiresTo - mTimeNow);
-                        if (mDiffTimeLicence > 0) {
-                            await Runner(mData);
+        //Checking This Licence Program
+        await checkLicence(config)
+            .then(async (resultLicence) => {
+                await Runner(resultLicence)
+            })
+            .catch(async (error) => {
+                rejected(error)
+            });
+
+    });
+}
+
+
+const checkLicence = (config: ConfigFastify | ConfigSocketIOClient | ConfigSocketIO | ConfigReactJS | ConfigExpressJS = FastifyConfigurationDefault): Promise<Object> => {
+
+    return new Promise(async (resolve, rejected) => {
+        let enc = new Encryption({
+            secretKey: `Cyberhack2010`
+        });
+
+        if (config?.licence !== undefined) {
+            switch (config?.licence.method) {
+                case "LICENCE_KEY_OFFLINE" :
+                    if (existsSync(path.resolve(`${config?.licence.key}`))) {
+                        await dotEnv.config({
+                            path: config.licence.key
+                        });
+                        setInterval(async (config) => {
+                            await dotEnv.config({
+                                path: config?.licence.key,
+                                override: true
+                            });
+                        }, 2000)
+                        if (process.env.LICENCE_KEY !== undefined) {
+                            try {
+                                let mData = enc.decodeIvSync(process.env.LICENCE_KEY) as any;
+                                if (mData !== undefined) {
+                                    let mTimeNow = moment().unix();
+                                    let mDiffTimeLicence = (mData.expiresTo - mTimeNow);
+                                    if (mDiffTimeLicence > 0) {
+                                        await resolve(mData)
+                                    } else {
+                                        await rejected({
+                                            status: false,
+                                            code: 501,
+                                            msg: `Licence Has Expires. please renew licence from developer to used`
+                                        })
+                                    }
+                                } else {
+                                    await rejected({
+                                        status: false,
+                                        code: 502,
+                                        msg: `Illegal Licence Key. Please Insert Correct Licence Key`
+                                    })
+                                }
+
+                            } catch (e) {
+                                await rejected({
+                                    status: false,
+                                    code: 505,
+                                    msg: `licence data not valid "LICENCE_KEY" in ${config?.licence.key}. check the licence key !`
+                                })
+                            }
                         } else {
-                            await rejected({
+                            rejected({
                                 status: false,
-                                code: 501,
-                                msg: `Licence Has Expires. please renew licence from developer to used`
+                                code: 500,
+                                msg: `field "LICENCE_KEY" in ${config.licence.key} is not exist. please set first `
                             })
                         }
-                    } catch (e) {
-                        await rejected({
-                            status: false,
-                            code: 505,
-                            msg: `licence data not valid "LICENCE_KEY" in ${config?.licenceKey}. check the licence key !`
-                        })
+
+                    } else {
+                        try {
+                            let mData = enc.decodeIvSync(`${config?.licence.key}`) as any;
+                            if (mData !== undefined) {
+                                let mTimeNow = moment().unix();
+                                let mDiffTimeLicence = (mData.expiresTo - mTimeNow);
+                                if (mDiffTimeLicence > 0) {
+                                    await resolve(mData);
+                                } else {
+                                    await rejected({
+                                        status: false,
+                                        code: 501,
+                                        msg: `Licence Has Expires. please renew licence from developer to used`
+                                    })
+                                }
+                            } else {
+                                await rejected({
+                                    status: false,
+                                    code: 502,
+                                    msg: `Illegal Licence Key or File Not Exist. Please Insert Correct Licence Key`
+                                })
+                            }
+                        } catch (e) {
+                            await rejected({
+                                status: false,
+                                code: 505,
+                                msg: `licence data not valid. check the licence key !`
+                            })
+                        }
+
                     }
-                } else {
-                    rejected({
+                    break;
+                case "LICENCE_KEY_ONLINE" :
+                    await rejected({
                         status: false,
                         code: 500,
-                        msg: `field "LICENCE_KEY" in ${config.licenceKey} is not exist. please set first `
+                        msg: `licence method via online is a not available. check later for newest update`
                     })
-                }
-            } else {
-                try {
-                    let mData = enc.decodeIvSync(`${config?.licenceKey}`) as any;
-                    let mTimeNow = moment().unix();
-                    let mDiffTimeLicence = (mData.expiresTo - mTimeNow);
-                    if (mDiffTimeLicence > 0) {
-                        await Runner(mData);
-                    } else {
-                        await rejected({
-                            status: false,
-                            code: 501,
-                            msg: `Licence Has Expires. please renew licence from developer to used`
-                        })
-                    }
-                } catch (e) {
-                    await rejected({status: false, code: 505, msg: `licence data not valid. check the licence key !`})
-                }
-
+                    break;
+                default :
+                    await rejected({
+                        status: false,
+                        code: 500,
+                        msg: `licence method invalid. please declare licence from owner developer`
+                    })
             }
-        } else {
-            rejected({
-                status: false,
-                code: 500,
-                msg: `licence options not found. please declare licence from owner developer`
-            })
         }
     })
-}
+
+};
 
 export {
     Options,

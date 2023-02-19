@@ -36,12 +36,53 @@ export async function ServerViewInstance(config: ConfigFastify, logger: Logger, 
                     /** ================= DEBUG CONSOLE ======================= **/
                     logger.error("plugins point of view enabled. but `@fastify/view` not found. please install first")
                     /** ================= DEBUG CONSOLE ======================= **/
-                    rejected({ status : false, code : 500, msg : `plugin point of view enabled. but module not found. skipped`})
+                    rejected({
+                        status: false,
+                        code: 500,
+                        msg: `plugin point of view enabled. but module not found. skipped`
+                    })
                 }
-            }else{
+            } else {
                 await resolve(app);
             }
-        }else{
+        } else {
+            await resolve(app);
+        }
+
+    })
+}
+
+export async function ServerFormBodyInstance(config: ConfigFastify, logger: Logger, app: FastifyInstance): Promise<FastifyInstance> {
+    return new Promise(async (resolve, rejected) => {
+        if (config.plugins?.formBody !== undefined) {
+            if (config.plugins?.formBody?.enabled) {
+                /** ================= DEBUG CONSOLE ======================= **/
+                logger.info("plugins point of view enabled. check the module resolution `@fastify/formBody` ")
+                /** ================= DEBUG CONSOLE ======================= **/
+                if (checkModuleExist("@fastify/view")) {
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    logger.info("plugins point of view enabled. `@fastify/formBody` is exist ")
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    if (config.plugins.formBody.settings !== undefined) {
+                        await app.register(require("@fastify/formbody"));
+                        await resolve(app);
+                    } else {
+                        await rejected({
+                            status: false,
+                            code: 500,
+                            msg: `point of view is Enabled, but plugins.formBody.settings. not declare`
+                        })
+                    }
+                } else {
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    logger.error("plugins point of view enabled. but `@fastify/formBody` not found. please install first")
+                    /** ================= DEBUG CONSOLE ======================= **/
+                    rejected({status: false, code: 500, msg: `form Body enabled. but module not found. skipped`})
+                }
+            } else {
+                await resolve(app);
+            }
+        } else {
             await resolve(app);
         }
 
@@ -207,6 +248,7 @@ export async function Plugins(config: ConfigFastify, logger: Logger, app: Fastif
     await Promise.all([
         await ServerViewInstance(config, logger, app),
         await ServerStaticInstance(config, logger, app),
+        await ServerFormBodyInstance(config, logger, app),
         await ServerNgrokTunnelingInstance(config, logger, app)
     ]).then(async () => {
         mApp = app;

@@ -1,5 +1,4 @@
 import React, {FunctionComponent} from "react";
-import {useSearchParams} from "react-router-dom";
 
 const ExampleCode: string = `
     import {Options, Server} from "@dkaframework/server";
@@ -14,9 +13,6 @@ const ExampleCode: string = `
 const Hello: FunctionComponent<any> = (props) => {
     require("../../Assets/css/style.css")
     require("../../Assets/main.sass");
-
-    const [searchParams, setSearchParams] = useSearchParams();
-    console.log(searchParams.get("data"))
 
     return (
         <div className="body-wrap">
