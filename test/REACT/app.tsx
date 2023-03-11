@@ -3,5 +3,5 @@ import {createRoot} from 'react-dom/client';
 
 let container = document.getElementById('dka');
 let DOM = createRoot(container!)
-DOM.render(<h1>Halo Dunia</h1>)
+DOM.render(<h1 style={{ color : '#e8780a'}}>Halo</h1>)
 

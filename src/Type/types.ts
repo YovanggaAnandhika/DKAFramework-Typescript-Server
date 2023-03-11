@@ -16,20 +16,24 @@ import {ReactNode} from "react";
 import {DisconnectDescription} from "socket.io-client/build/esm-debug/socket";
 import DisconnectReason = Socket.DisconnectReason;
 
-export * from "fastify";
-
-export type SocketIOInstance = Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+/** Generic Types**/
+export type SocketIOInstanceServer = Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 export type SocketIOInstanceNamespace = Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 export type SocketIOInstanceSocket = SocketServer<DefaultEventsMap, DefaultEventsMap, any>;
 export type SocketIOInstanceSocketRemote = RemoteSocket<DefaultEventsMap, any>;
 export type SocketIOInstanceClient = Sock.Socket<DefaultEventsMap, DefaultEventsMap>;
-export type SocketIOInstances = (io: SocketIOInstance) => Promise<void> | void | undefined;
-export type SocketIOInstancesMiddleware = (io: SocketServer<DefaultEventsMap, DefaultEventsMap>, next: (err?: (ExtendedError | undefined)) => void) => Promise<void> | void | undefined;
+
+/** Function Types **/
+export type SocketIOInstanceAsInstance = (io: SocketIOInstanceServer) => Promise<void> | void | undefined;
+export type SocketIOInstancesMiddlewareNext = (err?: (ExtendedError | undefined)) => void | undefined;
+export type SocketIOInstancesMiddleware = (io: SocketIOInstanceSocket, next : SocketIOInstancesMiddlewareNext) => Promise<void> | void | undefined;
 export type FastifyRegistringPlugins = (app: FastifyInstance) => Promise<FastifyInstance>;
 export type FastifyInstances = (app: FastifyInstance, opts: FastifyPluginOptions, next: any) => Promise<void> | void | undefined;
 export type SocketIOInstancesClient = (io: SocketIOInstanceClient) => Promise<void> | void | undefined;
 export type SocketIOMiddleware = (io: ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next: (error ?: Error) => void) => void | Promise<void>;
 export type ExpressJSRoutesInstance = (router: Router) => void | Promise<void>;
+
+export type SocketIOInstances = SocketIOInstanceAsInstance;
 
 export type SecurityAuthorizationCallbackOauth = (callback: ConfigServerSocketIOOptionsSecurityAuthorizationCallbackOauth, next: (error ?: Error) => void) => void | Promise<void>;
 export type SecurityAuthorizationCallbackBasic = (callback: ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic, next: (error ?: Error) => void) => void | Promise<void>;
@@ -63,7 +67,6 @@ export function isReactJS(obj: any): obj is ConfigReactJS {
 
 export type MetaDataSocketIOClient = {
     id?: string,
-    io?: Sock.Socket<DefaultEventsMap, any>,
     reason?: DisconnectReason | undefined,
     description?: DisconnectDescription | undefined,
     timestamp?: {
@@ -125,6 +128,11 @@ export type EngineSocketIO = "SOCKET.IO";
 export type EngineSocketIOClient = "SOCKET.IO-CLIENT";
 export type EngineReactJS = "REACTJS";
 export type EngineExpressJS = "EXPRESSJS";
+
+export interface SocketListArray {
+    name ?: string | undefined,
+    socket : Socket
+}
 
 export type LicenceMethodOffline = "LICENCE_KEY_OFFLINE";
 export type LicenceMethodOnline = "LICENCE_KEY_ONLINE";

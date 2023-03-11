@@ -29,7 +29,7 @@ export interface ConfigServerSocketIOOptionsSecurityAuthorizationCallbackBasic {
 
 
 export interface ConfigServerSocketIOOptionsSocket extends Partial<ServerOptions> {
-    costumMiddleware? : SocketIOInstancesMiddleware | undefined,
+
 }
 
 export interface ConfigSocketIOHTTPSSettings {
@@ -114,6 +114,7 @@ export interface ConfigSocketIO extends GlobalConfig {
     logger?: ConfigSystemLogger | undefined,
     host?: string | undefined,
     port?: number | Server,
+    use?: SocketIOInstancesMiddleware,
     io?: SocketIOInstances,
     onConnection?: (io: SocketIOInstanceSocket) => Promise<void> | void | undefined,
     onDisconnect?: (reason: string) => Promise<void> | void | undefined,

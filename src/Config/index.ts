@@ -58,7 +58,7 @@ export const SocketIOConfigurationDefault : ConfigSocketIO = {
     state: Const.Server.State.SERVER_STATE_DEVELOPMENT,
     engine: Const.Server.Engine.SOCKETIO.Server,
     logger: {
-        enabled: false,
+        enabled: true,
         path: {
             error: path.join(require.main?.path!, "./Logs/error.log"),
             info: path.join(require.main?.path!, "./Logs/info.log"),
@@ -68,7 +68,13 @@ export const SocketIOConfigurationDefault : ConfigSocketIO = {
     options: {
         socket: {
             perMessageDeflate: false,
-            costumMiddleware: undefined
+            pingInterval : 1000,
+            pingTimeout : 3000,
+            allowEIO3 : true,
+            cors : {
+                origin: '*',
+            },
+            connectTimeout : 5000
         },
         server: {
             protocol: "HTTP"
@@ -85,10 +91,12 @@ export const SocketIOConfigurationDefault : ConfigSocketIO = {
 export const SocketIOClientConfigurationDefault : ConfigSocketIOClient = {
     state: Const.Server.State.SERVER_STATE_DEVELOPMENT,
     engine: Const.Server.Engine.SOCKETIO.Client,
-    host: "127.0.0.1",
-    port: 71,
     settings: {
-        reconnectionDelay: 1000,
+        reconnection : true,
+        reconnectionAttempts : 3,
+        reconnectionDelay : 1000,
+        reconnectionDelayMax : 2000,
+        timeout : 5000,
         encryption: {
             enabled: false,
             settings: {

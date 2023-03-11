@@ -1,9 +1,16 @@
-import {EngineSocketIOClient, MetaDataSocketIOClient, SocketIOInstancesClient, State} from "../../../Type/types";
+import {
+    EngineSocketIOClient,
+    MetaDataSocketIOClient,
+    SocketIOInstancesClient,
+    State
+} from "../../../Type/types";
 import {ManagerOptions, SocketOptions} from "socket.io-client"
 import {ConfigSystemLogger, ConfigSystemMultiTypes} from "../../Global";
 import {GlobalConfig} from "../Global";
+import {Packet} from "socket.io-parser";
 
 export type ConfigSocketIOClientOnConnect = (io: MetaDataSocketIOClient) => Promise<void> | void;
+export type ConfigSocketIOClientOnPacket = (packet : Packet) => Promise<void> | void;
 export type ConfigSocketIOClientConnectError = (error: any) => Promise<void> | void | undefined;
 export type ConfigSocketIOClientError = (error: any) => Promise<void> | void | undefined;
 export type ConfigSocketIOClientOnDisconnect = (id: MetaDataSocketIOClient) => Promise<void> | void | undefined;
@@ -23,10 +30,25 @@ export interface ConfigSocketIOClientSettingsEncryption {
     settings?: ConfigSocketIOClientSettingsEncryptionSettings
 }
 
-export interface ConfigSocketIOClientSettings extends Partial<ManagerOptions & SocketOptions> {
+export interface ConfigSocketIOClientSettings extends Partial<SocketOptions & ManagerOptions> {
     encryption?: ConfigSocketIOClientSettingsEncryption
 }
 
+
+export interface ConfigSocketIOClientOn {
+    Connect?: ConfigSocketIOClientOnConnect,
+    ConnectError?: ConfigSocketIOClientConnectError,
+    Disconnect?: ConfigSocketIOClientOnDisconnect,
+    Manager ?: {
+        Reconnect?: ConfigSocketIOClientEventOnReconnect,
+        ReconnectAttempt?: ConfigSocketIOClientEventOnReconnectAttempt,
+        ReconnectError?: ConfigSocketIOClientEventOnReconnectError,
+        ReconnectFailed?: ConfigSocketIOClientEventOnReconnectFailed,
+        Ping?: ConfigSocketIOClientEventOnPing,
+        Packet?: ConfigSocketIOClientOnPacket,
+        Error?: ConfigSocketIOClientEventOnError,
+    }
+}
 export interface ConfigSocketIOClient extends GlobalConfig {
     /**
      * The State Development or Production
@@ -34,47 +56,11 @@ export interface ConfigSocketIOClient extends GlobalConfig {
     state?: State,
     engine?: EngineSocketIOClient | undefined,
     logger?: ConfigSystemLogger | undefined,
-    host?: string | undefined,
-    port?: number | undefined,
-    io?: SocketIOInstancesClient | undefined,
+    host ?: string | undefined,
+    port ?: number | undefined,
+    io ?: SocketIOInstancesClient | undefined,
     costumNameSpace?: string | undefined,
-    onConnect?: ConfigSocketIOClientOnConnect,
-    onConnectError?: ConfigSocketIOClientConnectError,
-    onError?: ConfigSocketIOClientError,
-    onDisconnect?: ConfigSocketIOClientOnDisconnect,
-    events?: {
-        onReconnect?: ConfigSocketIOClientEventOnReconnect,
-        onReconnectAttempt?: ConfigSocketIOClientEventOnReconnectAttempt,
-        onReconnectError?: ConfigSocketIOClientEventOnReconnectError,
-        onReconnectFailed?: ConfigSocketIOClientEventOnReconnectFailed,
-        onPing?: ConfigSocketIOClientEventOnPing,
-        onError?: ConfigSocketIOClientEventOnError,
-    }
-
-    /**
-     *
-     * await io.io.on("reconnect", async (attempt) => {
-     *             console.log(`connection socket.io-client reconnect, with message ${attempt.toString()} attempt`);
-     *         })
-     *
-     *         await io.io.on("reconnect_attempt", async (attempt) => {
-     *             console.log(`connection socket.io-client reconnect_attempt, with message ${attempt.toString()} attempt`);
-     *         });
-     *         await io.io.on("reconnect_error", async (error) => {
-     *             console.log(`connection socket.io-client reconnect_error, with message ${error.toString()}`);
-     *         });
-     *
-     *         await io.io.on("reconnect_failed", async () => {
-     *             console.log(`connection socket.io-client failed`);
-     *         });
-     *
-     *         await io.io.on("ping", async () => {
-     *             console.log(`connection socket.io-client ping events`)
-     *         })
-     *         await io.io.on("error", async (error) => {
-     *             console.log(`connection socket.io-client fatal error, with message ${error.toString()}`)
-     *         });
-     */
+    on ?: ConfigSocketIOClientOn | undefined,
     getConfig?: (config: ConfigSocketIOClient) => void | Promise<void>,
     settings?: ConfigSocketIOClientSettings | undefined,
     Constanta?: ConfigSystemMultiTypes | undefined

@@ -71,15 +71,15 @@ export const SOCKET_IO = async (config: ConfigSocketIO, logger: Logger): Promise
     return new Promise(async (resolve, rejected) => {
         try {
             logger.info(`server socket io checking costum middleware`)
-            if (config.options?.socket?.costumMiddleware !== undefined) {
-                logger.info(`server socket io costumMiddleware is defined`)
-                await io.use(config.options.socket.costumMiddleware);
+            if (config.use !== undefined) {
+                logger.info(`server socket io costumMiddleware is defined`);
+                await io.use(await Middleware(config, logger));
+                await io.use(config.use);
             } else {
                 logger.info(`server socket io costumMiddleware default config`)
                 await io.use(await Middleware(config, logger));
             }
             logger.info(`server socket io create event connection`);
-
 
             await io.on("connection", async (socket) => {
                 logger.info(`server socket io become event "connected" with id ${socket.id}`);
@@ -90,12 +90,13 @@ export const SOCKET_IO = async (config: ConfigSocketIO, logger: Logger): Promise
                     TotalClientConnected: mClientList.length
                 }) : null;
                 mClientList.push(socket);
+
                 await socket.on("error", async (error) => {
                     (config.onError !== undefined) ? config.onError(error) : null;
                 });
 
-                await io.on("disconnect", async (reason) => {
-                    logger.info(`server socket io become event "disconnected"`);
+                await socket.on("disconnect", async (reason) => {
+                    logger.info(`server socket io become event "disconnected" ${socket.id}`);
                     (config.onDisconnect !== undefined) ? config.onDisconnect(reason) : null;
                     mClientList = mClientList.filter(item => item !== socket);
                     (config.onClient !== undefined) ? config.onClient({

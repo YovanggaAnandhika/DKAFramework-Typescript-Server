@@ -1,6 +1,6 @@
 {
   "name": "@dkaframework/server",
-  "version": "1.0.111",
+  "version": "1.0.117",
   "homepage": ".",
   "description": "The Multi Framework Server Function. Part Module Of DKAFramework",
   "keywords": [
@@ -32,7 +32,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "test:socketio:client": "ts-node test/Socket.Io/client.ts",
+    "test:socketio:client": "nodemon --watch src --watch test/Socket.Io/client.ts --exec ts-node test/Socket.Io/client.ts",
     "test:socketio:client2": "ts-node test/Socket.Io/client2.ts",
     "test:socketio:server": "ts-node test/Socket.Io/server.ts",
     "test:react": "ts-node test/REACT/index.ts",
@@ -59,6 +59,7 @@
     "@types/lodash": "^4.14.182",
     "@types/node": "^18.8.4",
     "@types/nodemon": "^1.19.2",
+    "@types/ping": "^0.4.1",
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.6",
     "@types/tcp-port-used": "^1.0.1",
@@ -75,9 +76,12 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "is-electron": "^2.2.1",
+    "is-port-reachable": "^4.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.37",
+    "node-schedule": "^2.1.1",
+    "ping": "^0.4.4",
     "react": "^18.2.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",

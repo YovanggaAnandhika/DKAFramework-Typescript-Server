@@ -194,7 +194,8 @@ export async function Server(config: ConfigFastify | ConfigSocketIO | ConfigReac
                             new winston.transports.File({
                                 filename: mTempSocketIO.logger?.path?.warning,
                                 level: "warning"
-                            })
+                            }),
+                            new winston.transports.Console()
                         ] : [new winston.transports.Console()],
                     });
                     logger.info("", {separatorNewProccess: true});
@@ -425,6 +426,8 @@ export async function Server(config: ConfigFastify | ConfigSocketIO | ConfigReac
             .catch(async (error) => {
                 rejected(error)
             });
+
+
     });
 }
 
@@ -513,7 +516,7 @@ export async function Client(config: ConfigSocketIOClient = SocketIOClientConfig
                 await Runner(resultLicence)
             })
             .catch(async (error) => {
-                rejected(error)
+                await rejected(error)
             });
 
     });
@@ -575,7 +578,7 @@ const checkLicence = (config: ConfigFastify | ConfigSocketIOClient | ConfigSocke
                                 status: false,
                                 code: 500,
                                 msg: `field "LICENCE_KEY" in ${config.licence.key} is not exist. please set first `
-                            })
+                            });
                         }
 
                     } else {
@@ -624,6 +627,15 @@ const checkLicence = (config: ConfigFastify | ConfigSocketIOClient | ConfigSocke
                         msg: `licence method invalid. please declare licence from owner developer`
                     })
             }
+        }else{
+            await rejected({
+                status: false,
+                code: 500,
+                msg: `licence field in server config is require. please contact owner developer for used framework`
+            });
+            setTimeout(async () => {
+                await process.exit(0);
+            },2000);
         }
     })
 

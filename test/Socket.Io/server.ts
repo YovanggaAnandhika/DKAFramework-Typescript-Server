@@ -1,27 +1,28 @@
 import {Options, Server} from "./../../src";
+import {SocketIOInstanceSocket} from "../../src/Type/types";
 
 (async () => {
     await Server({
         state: Options.Server.State.SERVER_STATE_DEVELOPMENT,
         engine: Options.Server.Engine.SOCKETIO.Server,
-        port: 213,
+        host : "0.0.0.0",
+        port: 2818,
+        onConnection : async (io) => {
+          console.log(io.id)
+        },
         licence: {
             method: "LICENCE_KEY_OFFLINE",
             key: "./dka.env"
         },
-        io: async (io) => {
-            io.on("test", async (data) => {
-                console.log(data)
-            })
-        },
-        onDisconnect: async (id) => {
-            console.log(`user disconnect`, JSON.stringify(id))
+        options : {
+            socket : {
+                pingInterval : 1000,
+                pingTimeout : 3000,
+                connectTimeout : 5000
+            }
         }
     }).then(async (result) => {
         console.log(result);
-        setInterval(function () {
-            console.log(process.env.DATAM)
-        }, 2000)
     }).catch(async (e) => {
         console.error(e);
     })
